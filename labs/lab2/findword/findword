@@ -1,0 +1,4 @@
+%%
+"Avi"|"Shimon" {printf("name found\n");}
+.|\n;
+%%
