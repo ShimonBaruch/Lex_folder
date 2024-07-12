@@ -1,17 +1,3 @@
-parser.y:32 parser name defined to default :"parse"
-parser.y:67:  warning:  $6 of 'function' has no declared type.
-parser.y:71:  warning:  $6 of 'function' has no declared type.
-parser.y:75:  warning:  $6 of 'function' has no declared type.
-parser.y:79:  warning:  $6 of 'function' has no declared type.
-parser.y:99:  warning: empty rule for typed nonterminal, and no action
-parser.y:129:  warning: empty rule for typed nonterminal, and no action
-parser.y:144:  warning:  type clash ('node' 'ival') on default action
-"parser.y", line 144: invalid input
-"parser.y", line 144: invalid input
-free(): double free detected in tcache 2
-Aborted (core dumped)
-
-
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,19 +64,19 @@ function_list:
 function:
     PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE
     {
-        $$ = create_node("FUNCTION", $2, $6, NULL, $3);
+        $$ = create_node("FUNCTION", $2, $5, NULL, $3->sval);
     }
     | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE
     {
-        $$ = create_node("FUNCTION", $2, $6, NULL, $3);
+        $$ = create_node("FUNCTION", $2, $5, NULL, $3->sval);
     }
     | PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE
     {
-        $$ = create_node("FUNCTION", $2, $6, NULL, $3);
+        $$ = create_node("FUNCTION", $2, $5, NULL, $3->sval);
     }
     | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE
     {
-        $$ = create_node("FUNCTION", $2, $6, NULL, $3);
+        $$ = create_node("FUNCTION", $2, $5, NULL, $3->sval);
     }
     ;
 
@@ -127,7 +113,7 @@ parameter_declaration_list:
 parameter_declaration:
     type IDENTIFIER
     {
-        $$ = create_node("PARAM", $1, NULL, NULL, $2);
+        $$ = create_node("PARAM", $1, NULL, NULL, $2->sval);
     }
     ;
 
@@ -147,19 +133,19 @@ declaration_list:
     ;
 
 declaration:
-    VAR type IDENTIFIER SEMICOLON
+    VAR type IDENTIFIER SEMICולON
     {
-        $$ = create_node("DECL", $2, NULL, NULL, $3);
+        $$ = create_node("DECL", $2, NULL, NULL, $3->sval);
     }
-    | VAR type IDENTIFIER ASSIGN expression SEMICOLON
+    | VAR type IDENTIFIER ASSIGN expression SEMICולON
     {
-        $$ = create_node("DECL_ASSIGN", $2, $5, NULL, $3);
+        $$ = create_node("DECL_ASSIGN", $2, $5, NULL, $3->sval);
     }
     | VAR type identifier_list SEMICולON
     {
         $$ = create_node("DECL_LIST", $2, NULL, $3, NULL);
     }
-    | VAR type identifier_list ASSIGN expression SEMICולON
+    | VAR type identifier_list ASSIGN expression SEMICולון
     {
         $$ = create_node("DECL_LIST_ASSIGN", $2, $5, $3, NULL);
     }
@@ -168,11 +154,11 @@ declaration:
 identifier_list:
     IDENTIFIER
     {
-        $$ = create_node("ID_LIST", NULL, NULL, NULL, $1);
+        $$ = create_node("ID_LIST", NULL, NULL, NULL, $1->sval);
     }
     | identifier_list COMMA IDENTIFIER
     {
-        $$ = create_node("ID_LIST", $1, NULL, NULL, $3);
+        $$ = create_node("ID_LIST", $1, NULL, NULL, $3->sval);
     }
     ;
 
@@ -191,7 +177,7 @@ statement:
     | for_statement
     | do_while_statement
     | return_statement
-    | function_call SEMICולON
+    | function_call SEMICולון
     | LBRACE statement_list RBRACE
     {
         $$ = create_node("BLOCK", $2, NULL, NULL, NULL);
@@ -199,17 +185,17 @@ statement:
     ;
 
 assignment:
-    IDENTIFIER ASSIGN expression SEMICולON
+    IDENTIFIER ASSIGN expression SEMICולון
     {
-        $$ = create_node("ASSIGN", $3, NULL, NULL, $1);
+        $$ = create_node("ASSIGN", $3, NULL, NULL, $1->sval);
     }
     | LBRACKET IDENTIFIER RBRACKET ASSIGN expression SEMICולון
     {
-        $$ = create_node("ASSIGN_ARRAY", $5, NULL, NULL, $2);
+        $$ = create_node("ASSIGN_ARRAY", $5, NULL, NULL, $2->sval);
     }
     | MULTIPLY IDENTIFIER ASSIGN expression SEMICולון
     {
-        $$ = create_node("ASSIGN_PTR", $4, NULL, NULL, $2);
+        $$ = create_node("ASSIGN_PTR", $4, NULL, NULL, $2->sval);
     }
     ;
 
