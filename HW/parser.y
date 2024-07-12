@@ -132,15 +132,15 @@ declaration:
     {
         $$ = create_node("DECL", $2, NULL, NULL, $3);
     }
-    | VAR type IDENTIFIER ASSIGN expression SEMICולON
+    | VAR type IDENTIFIER ASSIGN expression SEMICOLON
     {
         $$ = create_node("DECL_ASSIGN", $2, $5, NULL, $3);
     }
-    | VAR type identifier_list SEMICולON
+    | VAR type identifier_list SEMICOLON
     {
         $$ = create_node("DECL_LIST", $2, NULL, $3, NULL);
     }
-    | VAR type identifier_list ASSIGN expression SEMICולON
+    | VAR type identifier_list ASSIGN expression SEMICOLON
     {
         $$ = create_node("DECL_LIST_ASSIGN", $2, $5, $3, NULL);
     }
@@ -172,7 +172,7 @@ statement:
     | for_statement
     | do_while_statement
     | return_statement
-    | function_call SEMICולON
+    | function_call SEMICOLON
     | LBRACE statement_list RBRACE
     {
         $$ = create_node("BLOCK", $2, NULL, NULL, NULL);
