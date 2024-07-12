@@ -1,3 +1,13 @@
+parser.y:32 parser name defined to default :"parse"
+parser.y:99:  warning: empty rule for typed nonterminal, and no action
+parser.y:129:  warning: empty rule for typed nonterminal, and no action
+parser.y:136:  warning:  type clash ('node' 'ival') on default action
+"parser.y", line 136: invalid input
+"parser.y", line 136: invalid input
+free(): double free detected in tcache 2
+Aborted (core dumped)
+
+
 %{
 #include <stdio.h>
 #include <stdlib.h>
