@@ -408,11 +408,15 @@ Node *ast_root = NULL;
     Node *node;
 }
 
-%token BOOL CHAR INT DOUBLE FLOAT STRING INT_PTR CHAR_PTR DOUBLE_PTR FLOAT_PTR
-%token IF ELSE WHILE FOR VAR ARGS PUBLIC PRIVATE STATIC RETURN NULL_PTR VOID DO
-%token AND DIVIDE ASSIGN EQUAL GT GE LT LE MINUS NOT NE OR PLUS MULTIPLY ADDRESS
-%token BOOL_LITERAL CHAR_LITERAL INT_LITERAL DOUBLE_LITERAL FLOAT_LITERAL STRING_LITERAL
-%token IDENTIFIER
+%token <ival> BOOL CHAR INT DOUBLE FLOAT STRING INT_PTR CHAR_PTR DOUBLE_PTR FLOAT_PTR
+%token <ival> IF ELSE WHILE FOR VAR ARGS PUBLIC PRIVATE STATIC RETURN NULL_PTR VOID DO
+%token <ival> AND DIVIDE ASSIGN EQUAL GT GE LT LE MINUS NOT NE OR PLUS MULTIPLY ADDRESS
+%token <bval> BOOL_LITERAL
+%token <cval> CHAR_LITERAL
+%token <ival> INT_LITERAL
+%token <dval> DOUBLE_LITERAL
+%token <fval> FLOAT_LITERAL
+%token <sval> STRING_LITERAL IDENTIFIER
 %token SEMICOLON COMMA LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
 
 %type <node> program function_list function type parameter_list parameter_declaration_list parameter_declaration body declaration_list declaration statement_list statement assignment if_statement while_statement for_statement do_while_statement return_statement expression term factor function_call argument_list argument_declaration_list
@@ -437,19 +441,19 @@ function_list:
 function:
     PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE
     {
-        $$ = create_node("FUNCTION", $2, $6, NULL, $3);
+        $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval);
     }
     | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE
     {
-        $$ = create_node("FUNCTION", $2, $6, NULL, $3);
+        $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval);
     }
     | PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE
     {
-        $$ = create_node("FUNCTION", $2, $6, NULL, $3);
+        $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval);
     }
     | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE
     {
-        $$ = create_node("FUNCTION", $2, $6, NULL, $3);
+        $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval);
     }
     ;
 
@@ -486,7 +490,7 @@ parameter_declaration_list:
 parameter_declaration:
     type IDENTIFIER
     {
-        $$ = create_node("PARAM", $1, NULL, NULL, $2);
+        $$ = create_node("PARAM", $1, NULL, NULL, $2->sval);
     }
     ;
 
@@ -508,11 +512,11 @@ declaration_list:
 declaration:
     VAR type IDENTIFIER SEMICOLON
     {
-        $$ = create_node("DECL", $2, NULL, NULL, $3);
+        $$ = create_node("DECL", $2, NULL, NULL, $3->sval);
     }
     | VAR type IDENTIFIER ASSIGN expression SEMICOLON
     {
-        $$ = create_node("DECL_ASSIGN", $2, $5, NULL, $3);
+        $$ = create_node("DECL_ASSIGN", $2, $5, NULL, $3->sval);
     }
     | VAR type IDENTIFIER_LIST SEMICOLON
     {
@@ -527,11 +531,11 @@ declaration:
 IDENTIFIER_LIST:
     IDENTIFIER
     {
-        $$ = create_node("ID_LIST", NULL, NULL, NULL, $1);
+        $$ = create_node("ID_LIST", NULL, NULL, NULL, $1->sval);
     }
     | IDENTIFIER_LIST COMMA IDENTIFIER
     {
-        $$ = create_node("ID_LIST", $1, NULL, NULL, $3);
+        $$ = create_node("ID_LIST", $1, NULL, NULL, $3->sval);
     }
     ;
 
@@ -553,22 +557,22 @@ statement:
     | function_call SEMICOLON
     | LBRACE statement_list RBRACE
     {
-        $$ = $2;
+        $$ = create_node("BLOCK", $2, NULL, NULL, NULL);
     }
     ;
 
 assignment:
     IDENTIFIER ASSIGN expression SEMICOLON
     {
-        $$ = create_node("ASSIGN", $3, NULL, NULL, $1);
+        $$ = create_node("ASSIGN", $3, NULL, NULL, $1->sval);
     }
     | LBRACKET IDENTIFIER RBRACKET ASSIGN expression SEMICOLON
     {
-        $$ = create_node("ASSIGN_ARRAY", $5, NULL, NULL, $2);
+        $$ = create_node("ASSIGN_ARRAY", $5, NULL, NULL, $2->sval);
     }
     | MULTIPLY IDENTIFIER ASSIGN expression SEMICOLON
     {
-        $$ = create_node("ASSIGN_PTR", $4, NULL, NULL, $2);
+        $$ = create_node("ASSIGN_PTR", $4, NULL, NULL, $2->sval);
     }
     ;
 
@@ -579,7 +583,7 @@ if_statement:
     }
     | IF LPAREN expression RPAREN statement ELSE statement
     {
-        $$ = create_node("IF_ELSE", $3, $5, NULL, NULL);
+        $$ = create_node("IF_ELSE", $3, $5, $7, NULL);
     }
     ;
 
@@ -593,7 +597,7 @@ while_statement:
 for_statement:
     FOR LPAREN assignment expression SEMICOLON assignment RPAREN statement
     {
-        $$ = create_node("FOR", $3, $4, $5, NULL);
+        $$ = create_node("FOR", $3, $4, $5, $7);
     }
     ;
 
@@ -644,27 +648,27 @@ term:
 factor:
     INT_LITERAL
     {
-        $$ = create_node("INT_LITERAL", NULL, NULL, NULL, $1);
+        $$ = create_node("INT_LITERAL", NULL, NULL, NULL, $1->ival);
     }
     | FLOAT_LITERAL
     {
-        $$ = create_node("FLOAT_LITERAL", NULL, NULL, NULL, $1);
+        $$ = create_node("FLOAT_LITERAL", NULL, NULL, NULL, $1->fval);
     }
     | DOUBLE_LITERAL
     {
-        $$ = create_node("DOUBLE_LITERAL", NULL, NULL, NULL, $1);
+        $$ = create_node("DOUBLE_LITERAL", NULL, NULL, NULL, $1->dval);
     }
     | CHAR_LITERAL
     {
-        $$ = create_node("CHAR_LITERAL", NULL, NULL, NULL, $1);
+        $$ = create_node("CHAR_LITERAL", NULL, NULL, NULL, $1->cval);
     }
     | BOOL_LITERAL
     {
-        $$ = create_node("BOOL_LITERAL", NULL, NULL, NULL, $1);
+        $$ = create_node("BOOL_LITERAL", NULL, NULL, NULL, $1->bval);
     }
     | IDENTIFIER
     {
-        $$ = create_node("IDENTIFIER", NULL, NULL, NULL, $1);
+        $$ = create_node("IDENTIFIER", NULL, NULL, NULL, $1->sval);
     }
     | LPAREN expression RPAREN
     {
@@ -675,7 +679,7 @@ factor:
 function_call:
     IDENTIFIER LPAREN argument_list RPAREN
     {
-        $$ = create_node("FUNCTION_CALL", $3, NULL, NULL, $1);
+        $$ = create_node("FUNCTION_CALL", $3, NULL, NULL, $1->sval);
     }
     ;
 
