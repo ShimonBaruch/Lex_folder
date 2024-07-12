@@ -271,27 +271,27 @@ term:
 factor:
     INT_LITERAL
     {
-        $$ = create_node("INT_LITERAL", NULL, NULL, NULL, $1);
+        $$ = create_node("INT_LITERAL", NULL, NULL, NULL, $1.ival);
     }
     | FLOAT_LITERAL
     {
-        $$ = create_node("FLOAT_LITERAL", NULL, NULL, NULL, $1);
+        $$ = create_node("FLOAT_LITERAL", NULL, NULL, NULL, $1.fval);
     }
     | DOUBLE_LITERAL
     {
-        $$ = create_node("DOUBLE_LITERAL", NULL, NULL, NULL, $1);
+        $$ = create_node("DOUBLE_LITERAL", NULL, NULL, NULL, $1.dval);
     }
     | CHAR_LITERAL
     {
-        $$ = create_node("CHAR_LITERAL", NULL, NULL, NULL, $1);
+        $$ = create_node("CHAR_LITERAL", NULL, NULL, NULL, $1.cval);
     }
     | BOOL_LITERAL
     {
-        $$ = create_node("BOOL_LITERAL", NULL, NULL, NULL, $1);
+        $$ = create_node("BOOL_LITERAL", NULL, NULL, NULL, $1.bval);
     }
     | IDENTIFIER
     {
-        $$ = create_node("IDENTIFIER", NULL, NULL, NULL, $1);
+        $$ = create_node("IDENTIFIER", NULL, NULL, NULL, $1.sval);
     }
     | LPAREN expression RPAREN
     {
