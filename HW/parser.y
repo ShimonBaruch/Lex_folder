@@ -181,7 +181,7 @@ statement:
     | function_call SEMICOLON
     | LBRACE statement_list RBRACE
     {
-        $$ = $2;
+        $$ = create_node("BLOCK", $2, NULL, NULL, NULL);
     }
     ;
 
