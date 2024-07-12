@@ -12,10 +12,10 @@
 "double"        { return DOUBLE; }
 "float"         { return FLOAT; }
 "string"        { return STRING; }
-"int\*"         { return INT_PTR; }
-"char\*"        { return CHAR_PTR; }
-"double\*"      { return DOUBLE_PTR; }
-"float\*"       { return FLOAT_PTR; }
+"int\\*"        { return INT_PTR; }
+"char\\*"       { return CHAR_PTR; }
+"double\\*"     { return DOUBLE_PTR; }
+"float\\*"      { return FLOAT_PTR; }
 "if"            { return IF; }
 "else"          { return ELSE; }
 "while"         { return WHILE; }
