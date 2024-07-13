@@ -57,10 +57,10 @@ function_list:
     ;
 
 function:
-    PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6->node, NULL, $3->sval); }
-    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6->node, NULL, $3->sval); }
-    | PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6->node, NULL, $3->sval); }
-    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6->node, NULL, $3->sval); }
+    PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval); }
+    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval); }
+    | PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval); }
+    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval); }
     ;
 
 type:
@@ -109,7 +109,7 @@ declaration:
 
 IDENTIFIER_LIST:
     IDENTIFIER { $$ = create_node("ID_LIST", NULL, NULL, NULL, $1->sval); }
-    | IDENTIFIER_LIST COMMA IDENTIFIER { $$ = create_node("ID_LIST", $1->node, NULL, NULL, $3->sval); }
+    | IDENTIFIER_LIST COMMA IDENTIFIER { $$ = create_node("ID_LIST", $1, NULL, NULL, $3->sval); }
     ;
 
 statement_list:
@@ -144,7 +144,7 @@ while_statement:
     ;
 
 for_statement:
-    FOR LPAREN assignment expression SEMICOLON assignment RPAREN statement { $$ = create_node("FOR", $3, $4, $5->node, $7->node); }
+    FOR LPAREN assignment expression SEMICOLON assignment RPAREN statement { $$ = create_node("FOR", $3, $4, $5, $7); }
     ;
 
 do_while_statement:
