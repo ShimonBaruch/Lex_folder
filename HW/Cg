@@ -57,10 +57,10 @@ function_list:
     ;
 
 function:
-    PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $8, NULL, $3->sval); }
-    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $8, NULL, $3->sval); }
-    | PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $7, NULL, $3->sval); }
-    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $7, NULL, $3->sval); }
+    PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $1, NULL, $3->sval); }
+    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $1, NULL, $3->sval); }
+    | PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $1, NULL, $3->sval); }
+    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $1, NULL, $3->sval); }
     ;
 
 type:
@@ -146,7 +146,7 @@ while_statement:
 for_statement:
     FOR LPAREN assignment expression SEMICOLON assignment RPAREN statement { $$ = create_node("FOR", $3, $4, $5, $7); }
     ;
-
+    
 do_while_statement:
     DO statement WHILE LPAREN expression RPAREN SEMICOLON { $$ = create_node("DO_WHILE", $2, $5, NULL, NULL); }
     ;
