@@ -1,0 +1,33 @@
+parser.y:65.40-41: error: $6 of ‘function’ has no declared type
+   65 |     { $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval); }
+      |                                        ^~
+parser.y:108.84-85: error: $3 of ‘declaration’ has no declared type
+  108 | ...2, NULL, $3, NULL); }
+      |             ^~
+parser.y:109.107-108: error: $3 of ‘declaration’ has no declared type
+  109 | ... $2, $5, $3, NULL); }
+      |             ^~
+parser.y:113.18-19: error: $$ of ‘IDENTIFIER_LIST’ has no declared type
+  113 |     IDENTIFIER { $$ = create_node("ID_LIST", NULL, NULL, NULL, $1->sv...
+      |                  ^~
+parser.y:114.42-43: error: $$ of ‘IDENTIFIER_LIST’ has no declared type
+  114 |     | IDENTIFIER_LIST COMMA IDENTIFIER { $$ = create_node("ID_LIST", ...
+      |                                          ^~
+parser.y:114.70-71: error: $1 of ‘IDENTIFIER_LIST’ has no declared type
+  114 |     | IDENTIFIER_LIST COMMA IDENTIFIER { $$ = create_node("ID_LIST", ...
+      |                                                                      ^
+parser.y:149.110-111: error: $5 of ‘for_statement’ has no declared type
+  149 | ... $3, $4, $5, $7); }
+      |             ^~
+parser.y:149.114-115: error: $7 of ‘for_statement’ has no declared type
+  149 | ... $4, $5, $7); }
+      |             ^~
+parser.y:61.5-81: warning: type clash on default action: <node> != <ival> [-Wother]
+   61 |     PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE...
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+parser.y:62.7-84: warning: type clash on default action: <node> != <ival> [-Wother]
+   62 |     | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBR...
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+parser.y:63.7-76: warning: type clash on default action: <node> != <ival> [-Wother]
+   63 |     | PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body...
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
