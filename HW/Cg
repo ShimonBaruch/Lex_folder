@@ -57,10 +57,10 @@ function_list:
     ;
 
 function:
-    PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $8, NULL, $3->sval); }
-    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $8, NULL, $3->sval); }
-    | PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $7, NULL, $3->sval); }
-    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $7, NULL, $3->sval); }
+    PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $8, NULL, $3); }
+    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $8, NULL, $3); }
+    | PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $7, NULL, $3); }
+    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $7, NULL, $3); }
     ;
 
 type:
@@ -88,7 +88,7 @@ parameter_declaration_list:
     ;
 
 parameter_declaration:
-    type IDENTIFIER { $$ = create_node("PARAM", $1, NULL, NULL, $2->sval); }
+    type IDENTIFIER { $$ = create_node("PARAM", $1, NULL, NULL, $2); }
     ;
 
 body:
@@ -101,15 +101,15 @@ declaration_list:
     ;
 
 declaration:
-    VAR type IDENTIFIER SEMICOLON { $$ = create_node("DECL", $2, NULL, NULL, $3->sval); }
-    | VAR type IDENTIFIER ASSIGN expression SEMICOLON { $$ = create_node("DECL_ASSIGN", $2, $5, NULL, $3->sval); }
+    VAR type IDENTIFIER SEMICOLON { $$ = create_node("DECL", $2, NULL, NULL, $3); }
+    | VAR type IDENTIFIER ASSIGN expression SEMICOLON { $$ = create_node("DECL_ASSIGN", $2, $5, NULL, $3); }
     | VAR type IDENTIFIER_LIST SEMICOLON { $$ = create_node("DECL_LIST", $2, NULL, $3, NULL); }
     | VAR type IDENTIFIER_LIST ASSIGN expression SEMICOLON { $$ = create_node("DECL_LIST_ASSIGN", $2, $5, $3, NULL); }
     ;
 
 IDENTIFIER_LIST:
-    IDENTIFIER { $$ = create_node("ID_LIST", NULL, NULL, NULL, $1->sval); }
-    | IDENTIFIER_LIST COMMA IDENTIFIER { $$ = create_node("ID_LIST", $1, NULL, NULL, $3->sval); }
+    IDENTIFIER { $$ = create_node("ID_LIST", NULL, NULL, NULL, $1); }
+    | IDENTIFIER_LIST COMMA IDENTIFIER { $$ = create_node("ID_LIST", $1, NULL, NULL, $3); }
     ;
 
 statement_list:
@@ -129,9 +129,9 @@ statement:
     ;
 
 assignment:
-    IDENTIFIER ASSIGN expression SEMICOLON { $$ = create_node("ASSIGN", $3, NULL, NULL, $1->sval); }
-    | LBRACKET IDENTIFIER RBRACKET ASSIGN expression SEMICOLON { $$ = create_node("ASSIGN_ARRAY", $5, NULL, NULL, $2->sval); }
-    | MULTIPLY IDENTIFIER ASSIGN expression SEMICOLON { $$ = create_node("ASSIGN_PTR", $4, NULL, NULL, $2->sval); }
+    IDENTIFIER ASSIGN expression SEMICOLON { $$ = create_node("ASSIGN", $3, NULL, NULL, $1); }
+    | LBRACKET IDENTIFIER RBRACKET ASSIGN expression SEMICOLON { $$ = create_node("ASSIGN_ARRAY", $5, NULL, NULL, $2); }
+    | MULTIPLY IDENTIFIER ASSIGN expression SEMICOLON { $$ = create_node("ASSIGN_PTR", $4, NULL, NULL, $2); }
     ;
 
 if_statement:
@@ -144,7 +144,7 @@ while_statement:
     ;
 
 for_statement:
-    FOR LPAREN assignment expression SEMICOLON assignment RPAREN statement { $$ = create_node("FOR", $3, $4->node, $5->node, $7->node); }
+    FOR LPAREN assignment expression SEMICOLON assignment RPAREN statement { $$ = create_node("FOR", $3, $4, $5, $7); }
     ;
 
 do_while_statement:
@@ -178,7 +178,7 @@ factor:
     ;
 
 function_call:
-    IDENTIFIER LPAREN argument_list RPAREN { $$ = create_node("FUNCTION_CALL", $3, NULL, NULL, $1->sval); }
+    IDENTIFIER LPAREN argument_list RPAREN { $$ = create_node("FUNCTION_CALL", $3, NULL, NULL, $1); }
     ;
 
 argument_list:
