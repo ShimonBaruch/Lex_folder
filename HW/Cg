@@ -57,10 +57,10 @@ function_list:
     ;
 
 function:
-    PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval); }
-    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval); }
-    | PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval); }
-    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $6, NULL, $3->sval); }
+    PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $8, NULL, $3->sval); }
+    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN STATIC LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $8, NULL, $3->sval); }
+    | PUBLIC type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $7, NULL, $3->sval); }
+    | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $7, NULL, $3->sval); }
     ;
 
 type:
