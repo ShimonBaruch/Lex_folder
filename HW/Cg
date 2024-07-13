@@ -63,6 +63,7 @@ function:
     | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $7, NULL, $3->sval); }
     ;
 
+
 type:
     BOOL { $$ = create_node("TYPE", NULL, NULL, NULL, "BOOL"); }
     | CHAR { $$ = create_node("TYPE", NULL, NULL, NULL, "CHAR"); }
