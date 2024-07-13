@@ -63,7 +63,6 @@ function:
     | PRIVATE type IDENTIFIER LPAREN parameter_list RPAREN LBRACE body RBRACE { $$ = create_node("FUNCTION", $2, $7, NULL, $3->sval); }
     ;
 
-
 type:
     BOOL { $$ = create_node("TYPE", NULL, NULL, NULL, "BOOL"); }
     | CHAR { $$ = create_node("TYPE", NULL, NULL, NULL, "CHAR"); }
@@ -145,7 +144,7 @@ while_statement:
     ;
 
 for_statement:
-    FOR LPAREN assignment expression SEMICOLON assignment RPAREN statement { $$ = create_node("FOR", $3, $4, $5, $7); }
+    FOR LPAREN assignment expression SEMICOLON assignment RPAREN statement { $$ = create_node("FOR", $3, $4->node, $5->node, $7->node); }
     ;
 
 do_while_statement:
