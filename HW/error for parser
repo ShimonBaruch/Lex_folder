@@ -1,19 +1,6 @@
-parser.y:60.118-119: error: $6 of ‘function’ has no declared type
-   60 | ...ON", $2, $6, NULL, $3->sval); }
-      |             ^~
-parser.y:61.121-122: error: $6 of ‘function’ has no declared type
-   61 | ...ON", $2, $6, NULL, $3->sval); }
-      |             ^~
-parser.y:62.113-114: error: $6 of ‘function’ has no declared type
-   62 | ...ON", $2, $6, NULL, $3->sval); }
-      |             ^~
-parser.y:63.114-115: error: $6 of ‘function’ has no declared type
-   63 | ...ON", $2, $6, NULL, $3->sval); }
-      |             ^~
 parser.y:147.110-111: error: $5 of ‘for_statement’ has no declared type
   147 | ... $3, $4, $5, $7); }
       |             ^~
 parser.y:147.114-115: error: $7 of ‘for_statement’ has no declared type
   147 | ... $4, $5, $7); }
       |             ^~
-
