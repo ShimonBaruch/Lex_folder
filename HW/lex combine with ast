@@ -62,11 +62,11 @@ ASTNode *mknode(char *token, ASTNode *left, ASTNode *right) {
 "&"         { return ADDR; }
 "<-"        { return ASSIGN; }
 
-[0-9]+      { yylval.node = mknode(yytext, NULL, NULL); return INT_LIT; }
-\"([^\\\"]|\\.)*\"   { yylval.node = mknode(yytext, NULL, NULL); return STRING_LIT; }
-\'[^\']\'   { yylval.node = mknode(yytext, NULL, NULL); return CHAR_LIT; }
+[0-9]+      { yylval = mknode(yytext, NULL, NULL); return INT_LIT; }
+\"([^\\\"]|\\.)*\"   { yylval = mknode(yytext, NULL, NULL); return STRING_LIT; }
+\'[^\']\'   { yylval = mknode(yytext, NULL, NULL); return CHAR_LIT; }
 
-[a-zA-Z_][a-zA-Z0-9_]* { yylval.node = mknode(yytext, NULL, NULL); return ID; }
+[a-zA-Z_][a-zA-Z0-9_]* { yylval = mknode(yytext, NULL, NULL); return ID; }
 
 ";"         { return SEMICOLON; }
 ","         { return COMMA; }
