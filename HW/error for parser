@@ -1,10 +1,10 @@
-cc -o part1 y.tab.c -ll -Ly
-y.tab.c: In function ‘yyparse’:
-y.tab.c:1324:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
- 1324 |       yychar = yylex ();
-      |                ^~~~~
-In file included from parser.y:181:
-scanner.l: At top level:
+gil@gil-VirtualBox:~/Desktop/compilation course/project - compiler$ bison -d parser.y
+parser.y: warning: 169 shift/reduce conflicts [-Wconflicts-sr]
+parser.y: note: rerun with option '-Wcounterexamples' to generate conflict counterexamples
+gil@gil-VirtualBox:~/Desktop/compilation course/project - compiler$ flex scanner.l
+gil@gil-VirtualBox:~/Desktop/compilation course/project - compiler$ cc -o part1 y.tab.c lex.yy.c -ll
+cc1: fatal error: y.tab.c: No such file or directory
+compilation terminated.
 scanner.l:2:10: fatal error: y.tab.h: No such file or directory
     2 | #include "y.tab.h"
       |          ^~~~~~~~~
