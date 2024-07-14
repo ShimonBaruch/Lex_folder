@@ -1,29 +1,36 @@
+#ifndef NODE_H
+#define NODE_H
+
+typedef struct node {
+    char *token;
+    struct node *left;
+    struct node *right;
+} node;
+
+node* mknode(char* token, node *left, node *right);
+void Printtree(node *tree);
+void printTabs(int n);
+
+#endif // NODE_H
+
+====
+
 %{
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <string.h>
-	#include "lex.yy.c"
-	typedef struct node
-	{
-		char *token;
-		struct node *left;
-		struct node *right;
-	} node;
-	node* mknode(char* token, node *left, node *right);
-	void Printtree(node *tree);
-	void printTabs(int n);
-	int yylex();
-	int yyerror(char *e);
-	
-	int printlevel=0;
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "node.h" // כלול את הקובץ הזה שמכיל את הגדרת Node
+
+void yyerror(const char *s);
+int yylex(void);
+
+node *ast_root = NULL;
 %}
-%union
-{
+
+%union {
     struct node *node;
     char *string;
 }
-
-
 
 %token <string> COMMENT WHILE IF ELSE FOR 
 %token <string> RETURN
@@ -45,499 +52,245 @@
 %nonassoc IF
 %nonassoc ELSE 
 
-
 %type <node> address_expr address_exprs stmnts stmnt_block derefrence_expr  expr_list call_func 
 %type <node> expr lhs assmnt_stmnt new_block 
 %type <node> stmnt type_pro type_id var_id declear paren_expr
 %type <node> pro_body para_list para_pro procedure procedures
 %type <node> main program project declears RET
 %%
- //Main project
-project: cmmnt program { Printtree($2); printf("syntax valid\n");};
+// Main project
+project: cmmnt program { Printtree($2); printf("syntax valid\n"); };
 
-program: procedures main {$$=mknode("CODE",$1,$2);}
+program: procedures main { $$ = mknode("CODE", $1, $2); }
 
- //comments
-cmmnt: COMMENT cmmnt| ;
+// comments
+cmmnt: COMMENT cmmnt | ;
 
- //this is the main
+// this is the main
 main: PROCEDUR MAIN OPENPAREN CLOSEPAREN OPENBRACE pro_body CLOSEBRACE
 {
-$$=mknode("proc",
-mknode("Main",mknode("\n",NULL,NULL),NULL),
-mknode("ARGS",NULL,$6));
-}	| {$$=NULL;};
-
-//functions
-procedures: procedures  procedure {$$=mknode("",$1,$2);}
-	| {$$=NULL;};
-
-//function
-procedure: FUNCTION IDENTIFIER OPENPAREN para_pro CLOSEPAREN cmmnt RETURN type_pro  OPENBRACE  pro_body RET CLOSEBRACE
-{ 
-		$$=mknode("func",mknode($2,mknode("\n",NULL,NULL),mknode("ARGS",$4,mknode("return",$8,NULL))),mknode("",$10,$11));	
+$$ = mknode("proc",
+mknode("Main", mknode("\n", NULL, NULL), NULL),
+mknode("ARGS", NULL, $6));
 }
-| PROCEDUR IDENTIFIER OPENPAREN para_pro CLOSEPAREN  OPENBRACE  pro_body CLOSEBRACE
+| { $$ = NULL; };
+
+// functions
+procedures: procedures  procedure { $$ = mknode("", $1, $2); }
+| { $$ = NULL; };
+
+// function
+procedure: PROCEDUR type_pro IDENTIFIER OPENPAREN para_list CLOSEPAREN OPENBRACE stmnt_block CLOSEBRACE
 {
-	$$=mknode("proc",mknode($2,mknode("\n",NULL,NULL),NULL),mknode("ARGS",$4,$7));
-};
-
-
-//list of parameter for function or not
-para_pro: para_list {$$=$1;}
-| {$$=NULL;};
-
-//list of parameter
-
-para_list: var_id COLON type_id {$$=mknode("(",$3,mknode("",$1,mknode(")",NULL,NULL)));}
-	|  para_list SEMICOLON cmmnt  para_list 
-	{$$=mknode("",$1,mknode("",$4,NULL));}	;
-
- //Procedure body
-pro_body: cmmnt  procedures declears stmnts 
-{
-	$$=mknode("(BODY\n    ", mknode("",$2,NULL),mknode("",$3,mknode("",$4,mknode("}",NULL,NULL))));
-};
-
-
-//list of declears
-declears: declears declear  {$$=mknode("",$1,$2);} | {$$=NULL;}  ;
-
-//declaration of varibals/ 
-declear: VARIABLE var_id COLON type_id cmmnt SEMICOLON cmmnt
-{
-	$$=mknode("var", $4,$2);
-};
-
-//list of id like a,b,c/
-var_id: IDENTIFIER COMMA var_id {$$=mknode($1, mknode(" ", $3, NULL),NULL);}
-	| IDENTIFIER {$$=mknode($1, NULL, NULL);} ;
-
-
-//types without string/
-type_id: BOOL {$$=mknode("boolean", NULL, NULL);}
-	| STRING OPENBRACKET DECIMAL_LTL CLOSEBRACKET {$$=mknode("string", NULL, NULL);}
-	| CHAR {$$=mknode("char", NULL, NULL);}
-	| INT {$$=mknode("int", NULL, NULL);}
-	| REAL {$$=mknode("real", NULL, NULL);}
-	| INTPTR {$$=mknode("int*", NULL, NULL);}
-	| CHARPTR {$$=mknode("char*", NULL, NULL);}
-	| REALPTR {$$=mknode("real*", NULL, NULL);};
-
-
-
-//type for returning from a function
-type_pro: BOOL {$$=mknode("boolean", NULL, NULL);}
- 	| STRING {$$=mknode("string", NULL, NULL);}
-	| CHAR {$$=mknode("char", NULL, NULL);}
-	| INT {$$=mknode("int", NULL, NULL);}
-	| REAL {$$=mknode("real", NULL, NULL);}
-	| INTPTR {$$=mknode("int*", NULL, NULL);}
-	| CHARPTR {$$=mknode("char*", NULL, NULL);}
-	| REALPTR {$$=mknode("real*", NULL, NULL);};
-	
-
-//Statments
-stmnts: stmnts stmnt {$$=mknode("",$1,$2);} | {$$=NULL;};
-
-//stmnt_block
-stmnt_block: stmnt {$$=$1;}|RETURN expr SEMICOLON {$$=mknode("return",$2,NULL);};
-
-//new block in stmnts
-new_block: OPENBRACE cmmnt declears stmnts RET CLOSEBRACE cmmnt
-{
-	$$=mknode("{",$3,mknode("", $4, mknode("",$5,mknode("}",NULL,NULL))));
-};
-
-
-RET: RETURN expr SEMICOLON cmmnt {$$=mknode("return",$2,NULL);}| {$$=NULL;};
-
-//Statment
-stmnt: IF OPENPAREN expr CLOSEPAREN  stmnt_block 
-{
-	$$=mknode("if",
-	mknode("(", $3, 
-	mknode(")",NULL,NULL)),$5);
-}%prec IF
-| IF OPENPAREN expr CLOSEPAREN   stmnt_block    ELSE  stmnt_block  
-{
-	$$=mknode("if-else",
-	mknode("(", $3, 
-	mknode(")",NULL,NULL)),
-	mknode("",$5,
-	mknode("",$7,NULL)));
+$$ = mknode("proc", mknode($3, mknode("\n", NULL, NULL), $5), mknode("ARGS", NULL, $8));
 }
-| WHILE cmmnt OPENPAREN expr CLOSEPAREN  stmnt_block  
+| PROCEDUR type_pro IDENTIFIER OPENPAREN CLOSEPAREN OPENBRACE stmnt_block CLOSEBRACE
 {
-	$$=mknode("while",
-	mknode("(", $4, 
-	mknode(")",NULL,NULL)),$6);
-}
-| FOR cmmnt OPENPAREN assmnt_stmnt SEMICOLON expr SEMICOLON assmnt_stmnt CLOSEPAREN stmnt_block 
-{
-		$$= mknode("for",
-			mknode("(",
-			mknode("",$4,$6),
-			mknode("",$8,
-			mknode(")",NULL,NULL))),$10);		
-}
-| assmnt_stmnt SEMICOLON cmmnt {$$=mknode("",$1,NULL);}
-| expr SEMICOLON cmmnt {$$=$1;}
-| new_block {$$=$1;};
-
-
-
-
-//assiment statment
-assmnt_stmnt: lhs ASSINGMENT expr 
-{
-	$$=mknode("=",$1,$3);
+$$ = mknode("proc", mknode($3, mknode("\n", NULL, NULL), NULL), mknode("ARGS", NULL, $7));
 };
 
+// parameter list
+para_list: para_list COMMA para_pro { $$ = mknode("PARA", $1, $3); }
+| para_pro { $$ = mknode("PARA", NULL, $1); };
 
-//lefd hand side id
-lhs: IDENTIFIER OPENBRACKET expr CLOSEBRACKET 
-{
-	$$=mknode($1, mknode("[",$3,mknode("]",NULL,NULL)), NULL);
-} 
-| IDENTIFIER {$$=mknode($1,NULL,NULL);}
-| derefrence_expr{$$=$1;} ;
+// parameter
+para_pro: type_pro IDENTIFIER { $$ = mknode($2, NULL, NULL); };
 
+// type
+type_pro: BOOL { $$ = mknode("BOOL", NULL, NULL); }
+| STRING { $$ = mknode("STRING", NULL, NULL); }
+| CHARPTR { $$ = mknode("CHARPTR", NULL, NULL); }
+| CHAR { $$ = mknode("CHAR", NULL, NULL); }
+| INT { $$ = mknode("INT", NULL, NULL); }
+| INTPTR { $$ = mknode("INTPTR", NULL, NULL); }
+| REAL { $$ = mknode("REAL", NULL, NULL); }
+| REALPTR { $$ = mknode("REALPTR", NULL, NULL); };
 
-	
-//Expresion
-expr:  OPENPAREN expr CLOSEPAREN {$$=mknode("(",$2,mknode(")",NULL,NULL));}|
-//bool oper
-    expr EQL expr {$$=mknode("==",$1,$3);}
-	| expr NOTEQL expr {$$=mknode("!=",$1,$3);}
-	| expr GREATEREQL expr {$$=mknode(">=",$1,$3);}
-	| expr GREATER expr {$$=mknode(">",$1,$3);}
-	| expr LESSEQL expr {$$=mknode("<=",$1,$3);}
-	| expr LESS expr {$$=mknode("<",$1,$3);}
-	| expr AND expr {$$=mknode("&&",$1,$3);}
-	| expr OR expr {$$=mknode("||",$1,$3);}
-//aritmetical operator
-	| expr PLUS expr {$$=mknode("+",$1,$3);}
-	| expr MINUS expr {$$=mknode("-",$1,$3);}
-	| expr MULTI expr {$$=mknode("*",$1,$3);}
-	| expr DIVISION expr {$$=mknode("/",$1,$3);}
-//not operator
-	| NOT expr {$$=mknode("!",$2,NULL);}
-	| address_exprs {$$=$1;}
-	| derefrence_expr {$$=$1;}
-	| call_func cmmnt {$$=$1;}
-	| DECIMAL_LTL {$$=mknode($1,NULL,NULL);}
-	| HEX_LTL {$$=mknode($1,NULL,NULL);}
-	| CHAR_LTL {$$=mknode($1,NULL,NULL);}
-	| REAL_LTL {$$=mknode($1,NULL,NULL);}
-	| STRING_LTL {$$=mknode($1,NULL,NULL);}
-	| BOOLFALSE {$$=mknode($1,NULL,NULL);}
-	| BOOLTRUE {$$=mknode($1,NULL,NULL);}
-	| LENGTH IDENTIFIER LENGTH 
-	{
-		$$=mknode("|",
-		mknode($2,NULL,NULL),
-		mknode("|",NULL,NULL));
-	}
-	| IDENTIFIER OPENBRACKET expr CLOSEBRACKET 
-	{$$=mknode($1,mknode("[",$3,mknode("]",NULL,NULL)),NULL);}
-	| IDENTIFIER {$$=mknode($1,NULL,NULL);}
-	| NULLL {$$=mknode("null",NULL,NULL);};
+// body
+pro_body: stmnt_block { $$ = $1; }
+| { $$ = NULL; };
 
-//address expression like &id
+// statement block
+stmnt_block: OPENBRACE stmnts CLOSEBRACE { $$ = $2; }
+| stmnts { $$ = $1; };
 
-address_exprs:ADDRESS address_exprs {$$=mknode($1,$2,NULL);} | address_expr {$$=$1;};
+// statements
+stmnts: stmnts stmnt { $$ = mknode("STMNT", $1, $2); }
+| stmnt { $$ = mknode("STMNT", NULL, $1); };
 
-address_expr: ADDRESS IDENTIFIER {$$=mknode("&",mknode($2,NULL,NULL),NULL);}
-	| ADDRESS OPENPAREN IDENTIFIER CLOSEPAREN {$$=mknode("&",mknode("(",mknode($3,NULL,NULL),NULL),mknode(")",NULL,NULL));}
-	| ADDRESS IDENTIFIER OPENBRACKET expr CLOSEBRACKET 
-	{$$=mknode("&", mknode($2,NULL,NULL), mknode("[",$4,mknode("]",NULL,NULL)));}
-	| ADDRESS OPENPAREN IDENTIFIER OPENBRACKET expr CLOSEBRACKET CLOSEPAREN 
-	{
-		$$=mknode("&",
-		mknode("(", 
-		mknode($3,NULL,NULL),
-		mknode("[",$5,NULL)), 
-		mknode("]",NULL,mknode(")",NULL,NULL)));
-	};
-//value expression like ^id
+// statement
+stmnt: assmnt_stmnt { $$ = $1; }
+| RETURN expr SEMICOLON { $$ = mknode("RETURN", $2, NULL); }
+| IF expr stmnt { $$ = mknode("IF", $2, $3); }
+| IF expr stmnt ELSE stmnt { $$ = mknode("IFELSE", mknode("IF", $2, $3), $5); }
+| WHILE expr stmnt { $$ = mknode("WHILE", $2, $3); }
+| FOR assmnt_stmnt expr SEMICOLON expr stmnt { $$ = mknode("FOR", $2, mknode("COND", $3, mknode("INCR", $5, $6))); }
+| PROCEDUR IDENTIFIER OPENPAREN para_list CLOSEPAREN stmnt_block { $$ = mknode("PROCEDUR", mknode($2, NULL, $4), $6); }
+| PROCEDUR IDENTIFIER OPENPAREN CLOSEPAREN stmnt_block { $$ = mknode("PROCEDUR", mknode($2, NULL, NULL), $5); }
+| { $$ = NULL; };
 
+// assignment statement
+assmnt_stmnt: lhs ASSINGMENT expr SEMICOLON { $$ = mknode("ASSIGN", $1, $3); };
 
-	derefrence_expr: DEREFRENCE IDENTIFIER {$$=mknode("^",mknode($2,NULL,NULL),NULL);}
-	| DEREFRENCE OPENPAREN expr CLOSEPAREN {$$=mknode("^",mknode("(",$3,NULL),mknode(")",NULL,NULL));}
-	| DEREFRENCE IDENTIFIER OPENBRACKET expr CLOSEBRACKET 
-	{$$=mknode($1, mknode($2,NULL,NULL), mknode("[",$4,mknode("]",NULL,NULL)));};
+// left-hand side
+lhs: IDENTIFIER { $$ = mknode($1, NULL, NULL); };
 
-	//list of expreession
-expr_list: expr COMMA expr_list {$$=mknode("",$1,mknode(",",$3,NULL));} 
-	| expr {$$=mknode("",$1,NULL);}
-	| {$$=NULL;};
+// expression
+expr: expr PLUS expr { $$ = mknode("PLUS", $1, $3); }
+| expr MINUS expr { $$ = mknode("MINUS", $1, $3); }
+| expr MULTI expr { $$ = mknode("MULTI", $1, $3); }
+| expr DIVISION expr { $$ = mknode("DIVISION", $1, $3); }
+| expr EQL expr { $$ = mknode("EQL", $1, $3); }
+| expr NOTEQL expr { $$ = mknode("NOTEQL", $1, $3); }
+| expr LESS expr { $$ = mknode("LESS", $1, $3); }
+| expr LESSEQL expr { $$ = mknode("LESSEQL", $1, $3); }
+| expr GREATER expr { $$ = mknode("GREATER", $1, $3); }
+| expr GREATEREQL expr { $$ = mknode("GREATEREQL", $1, $3); }
+| expr AND expr { $$ = mknode("AND", $1, $3); }
+| expr OR expr { $$ = mknode("OR", $1, $3); }
+| NOT expr { $$ = mknode("NOT", NULL, $2); }
+| OPENPAREN expr CLOSEPAREN { $$ = $2; }
+| IDENTIFIER { $$ = mknode($1, NULL, NULL); }
+| DECIMAL_LTL { $$ = mknode($1, NULL, NULL); }
+| HEX_LTL { $$ = mknode($1, NULL, NULL); }
+| STRING_LTL { $$ = mknode($1, NULL, NULL); }
+| CHAR_LTL { $$ = mknode($1, NULL, NULL); }
+| REAL_LTL { $$ = mknode($1, NULL, NULL); }
+| BOOLTRUE { $$ = mknode("TRUE", NULL, NULL); }
+| BOOLFALSE { $$ = mknode("FALSE", NULL, NULL); }
+| NULLL { $$ = mknode("NULL", NULL, NULL); }
+;
 
-paren_expr:OPENPAREN expr_list CLOSEPAREN {$$=$2;};
-//call func rul 
-call_func: IDENTIFIER paren_expr {$$=mknode("Call func",mknode($1,NULL,NULL),mknode("ARGS",$2,NULL));} ;
 %%
 
-
-
-int main()
+node* mknode(char* token, node *left, node *right)
 {
-	return yyparse();	
+    node *newnode = (node*)malloc(sizeof(node));
+    newnode->token = strdup(token);
+    newnode->left = left;
+    newnode->right = right;
+    return newnode;
 }
 
-/* allocation for node*/
-node* mknode (char *token, node *left, node *right)
+void Printtree(node *tree)
 {
-	node *newnode = (node*)malloc(sizeof(node));
-	newnode->left=left;
-	newnode->right=right;
-	newnode->token=token;
-	return newnode;
+    if(tree != NULL)
+    {
+        printTabs(printlevel);
+        printlevel++;
+        printf("[%s]\n", tree->token);
+        Printtree(tree->left);
+        Printtree(tree->right);
+        printlevel--;
+    }
 }
 
 void printTabs(int n)
 {
-	int i;
-	for(i=0;i<n/3;i++)
-		printf(" ");
+    for(int i = 0; i < n; i++)
+    {
+        printf("\t");
+    }
 }
-void Printtree(node* tree)
-{
-	int flag = 4;
-	printTabs(printlevel); 
-	if(strcmp(tree->token, "var") == 0)
-	{
-		
-		printf("(DECLARE ");
-		flag=2;
-		
-		
-	}
-	else if(strcmp(tree->token, "if") == 0)
-	{
-		printf("(IF\n");
-		flag = 1;
-		
-		
-	}
-		else if(strcmp(tree->token, "while") == 0)
-	{
-		printf("(WHILE\n");
-		flag = 1;
-		
-		
-	}
-			else if(strcmp(tree->token, "for") == 0)
-	{
-		printf("(FOR\n");
-		flag = 1;
-		
-		
-	}
-		else if(strcmp(tree->token, "func") == 0 ||strcmp(tree->token, "proc") == 0 ||strcmp(tree->token, "CODE") == 0||strcmp(tree->token, "Call func") == 0)
-	{
-		printf("(%s \n",tree->token);
-		flag= 2;
-		
-	}
-		else if(strcmp(tree->token, "ARGS") == 0)
-	{
-		printf("(ARGS ");
-		if(tree->left)
-		{
-			flag = 2;
-			printf("\n");
-			
-		}
-		else{
-			printf(" NONE)\n"); 
-		}
-	
 
-	}
-		else if(strcmp(tree->token, "if-else") == 0)
-	{
-		printf("(IF-ELSE\n");
-		printlevel--;
-		
-		flag = 1;
-	}
-			else if(strcmp(tree->token, "return") == 0)
-	{
-		printf("(RET ");
-		flag = 2;
-	}
-	else if(strcmp(tree->token, "{") == 0)
-	{
-                printf("(BLOCK\n");
-				
-				
-	}
-	else if(strcmp(tree->token, "}") == 0)
-	{
-		printf(")\n");
-	}
-	else if(strcmp(tree->token, "") == 0);
-	else if(strcmp(tree->token, "(") == 0)
-			printf("(");
-	else if(strcmp(tree->token, "\n") == 0)
-			printf("\n");
-	else if(strcmp(tree->token, ")") == 0)
-			printf(")\n");
-	else if(strcmp(tree->token, ",") == 0)
-			printf(",");
-	else if(strcmp(tree->token, ";") == 0)
-			printf("\n");
-	else if(strcmp(tree->token, "&&") == 0 ||
-strcmp(tree->token, "/") == 0 || 
-strcmp(tree->token, "=") == 0 || 
-strcmp(tree->token, "==") == 0 || 
-strcmp(tree->token, ">") == 0 || 
-strcmp(tree->token, ">=") == 0 || 
-strcmp(tree->token, "<") == 0 || 
-strcmp(tree->token, "<=") == 0 || 
-strcmp(tree->token, "-") == 0 || 
-strcmp(tree->token, "!") == 0 || 
-strcmp(tree->token, "!=") == 0 || 
-strcmp(tree->token, "||") == 0 || 
-strcmp(tree->token, "+") == 0 || 
-strcmp(tree->token, "*") == 0 || 
-strcmp(tree->token, "&") == 0 || 
-strcmp(tree->token, "^") == 0 || 
-strcmp(tree->token, "|") == 0 || 
-strcmp(tree->token, ",") == 0 )
-	{
-			printf("(%s",tree->token);
-			flag=1;
-			if(strcmp(tree->token, "=") == 0)
-				flag=2;
-				
-	}
-	else
-	{
-		if(tree && (!tree->left && !tree->right)
-		||strcmp(tree->token, "Main") == 0)
-		{
-			printf("%s ", tree->token);
-			
-		}
-		else
-		{
-			printlevel++;
-			printf("%s", tree->token);
-			printlevel--;
-		
-		}
-	}
-	if (tree->left) 
-	{
-		printlevel++;
-		Printtree(tree->left);
-		printlevel--;
-	}
-	
-	if (tree->right)
-	{
-		printlevel++;
-		Printtree(tree->right);
-		printlevel--;
-		
-	}
-	if(flag == 2)
-		printf(")\n");
-	
-	if(flag == 1)
-		printf(")");
-	if(flag == 0)
-		printf("\n)");
-}
-int yyerror(char *e)
+void yyerror(const char *s)
 {
-	int yydebug=1; 
-	fflush(stdout);
-	fprintf(stderr,"Error %s at line %d\n" ,e,yylineno);
-	fprintf(stderr, "does not accept '%s'\n",yytext);
-	
-	return 0;
+    fprintf(stderr, "Error: %s\n", s);
+}
+
+int main(void)
+{
+    if (yyparse() == 0)
+    {
+        printf("Parse successful.\n");
+        Printtree(ast_root);
+        // free_ast(ast_root);  // Implement if necessary
+    }
+    else
+    {
+        printf("Parse failed.\n");
+    }
+    return 0;
 }
 
 ===
 
-/*Scanner-file*/
 %{
-#include<stdio.h>
-#include "y.tab.h"
+#include <stdio.h>
+#include "parser.tab.h"
+#include "node.h"
 %}
- /*%x comment*/
 
 %%
-  /*Types /*Keywords Lexemes*/
-bool {return BOOL;}
-char {return CHAR;}
-int {return INT;}
-real {return REAL;}
-string {return STRING;}
-int\* {return INTPTR;}
-char\* {return CHARPTR;}
-real\* {return REALPTR;}
 
-  /*Statement -Loops*/
-if {return IF;}
-else {return ELSE;}
-while {return WHILE;}
-for {return FOR;}
-var {return VARIABLE;}
-func {return FUNCTION;}
-proc {return PROCEDUR;}
-null {return NULLL;}
-Main {return MAIN;}
- 
-  /*Operators*/
-"&&" {return AND;}
-"/" {return DIVISION;}
-"=" {return ASSINGMENT;}
-"==" {return EQL;}
-">" {return GREATER;}
-">=" {return GREATEREQL;}
-"<" {return LESS;}
-"<=" {return LESSEQL;}
-"-" {return MINUS;}
-"!" {return NOT;}
-"!=" {return NOTEQL;}
-"||" {return OR;}
-"+" {return PLUS;}
-"*" {return MULTI;}
-"&" {return ADDRESS;}
-"^" {return DEREFRENCE;}
+bool           { return BOOL; }
+char           { return CHAR; }
+int            { return INT; }
+real           { return REAL; }
+string         { return STRING; }
+int\\*         { return INTPTR; }
+char\\*        { return CHARPTR; }
+real\\*        { return REALPTR; }
 
-  /*Other Lexemes*/
-"|" {return LENGTH;}
-";" {return SEMICOLON;}
-":" {return COLON;}
-"," {return COMMA;}
-"{" {return OPENBRACE;}
-"}" {return CLOSEBRACE;}
-"(" {return OPENPAREN;}
-")" {return CLOSEPAREN;}
-"[" {return OPENBRACKET;}
-"]" {return CLOSEBRACKET;}
- 
- "/""%".*"%""/" {return COMMENT;}
+if             { return IF; }
+else           { return ELSE; }
+while          { return WHILE; }
+for            { return FOR; }
+var            { return VARIABLE; }
+func           { return FUNCTION; }
+proc           { return PROCEDUR; }
+null           { return NULLL; }
+Main           { return MAIN; }
 
-  /*Literl*/
-return {return RETURN;}
-true {return BOOLTRUE;}
-false {return BOOLFALSE;}
-[a-zA-Z][a-zA-Z0-9_]* { yylval.string= strdup(yytext);return IDENTIFIER;}
-"\""[^"]*"\"" {yylval.string= strdup(yytext);return STRING_LTL;}
-\'.\' {yylval.string= strdup(yytext);return CHAR_LTL;}
-[+-]?[1-9][0-9]*|[0-9] {yylval.string= strdup(yytext);return DECIMAL_LTL;}
-0(x|X)[0-9A-F]+ {yylval.string= strdup(yytext);return HEX_LTL;}
-[-+]?[0-9]*\.?[0-9]*[eE]?[-+]?[0-9]+ {yylval.string= strdup(yytext);return REAL_LTL;}
-	/*Skip Whitespace, Enter, Tab*/
-[\n] {yylineno++;} //For each line (enter=\n), do yylineo+=1
-[ \t]+ ;
-. return yytext[0];
+"&&"           { return AND; }
+"/"            { return DIVISION; }
+"="            { return ASSINGMENT; }
+"=="           { return EQL; }
+">"            { return GREATER; }
+">="           { return GREATEREQL; }
+"<"            { return LESS; }
+"<="           { return LESSEQL; }
+"-"            { return MINUS; }
+"!"            { return NOT; }
+"!="           { return NOTEQL; }
+"||"           { return OR; }
+"+"            { return PLUS; }
+"*"            { return MULTI; }
+"&"            { return ADDRESS; }
+"^"            { return DEREFRENCE; }
+
+"|"            { return LENGTH; }
+";"            { return SEMICOLON; }
+":"            { return COLON; }
+","            { return COMMA; }
+"{"            { return OPENBRACE; }
+"}"            { return CLOSEBRACE; }
+"("            { return OPENPAREN; }
+")"            { return CLOSEPAREN; }
+"["            { return OPENBRACKET; }
+"]"            { return CLOSEBRACKET; }
+
+"/""%".*"%"/"  { return COMMENT; }
+
+return         { return RETURN; }
+true           { return BOOLTRUE; }
+false          { return BOOLFALSE; }
+[a-zA-Z][a-zA-Z0-9_]*    { yylval.string = strdup(yytext); return IDENTIFIER; }
+"\\""[^"]*\\""  { yylval.string = strdup(yytext); return STRING_LTL; }
+\\'.\\'         { yylval.string = strdup(yytext); return CHAR_LTL; }
+[+-]?[1-9][0-9]*|[0-9]  { yylval.string = strdup(yytext); return DECIMAL_LTL; }
+0(x|X)[0-9A-F]+ { yylval.string = strdup(yytext); return HEX_LTL; }
+[-+]?[0-9]*\\.?[0-9]*[eE]?[-+]?[0-9]+ { yylval.string = strdup(yytext); return REAL_LTL; }
+
+[\\n]          { yylineno++; } // For each line (enter = \\n), do yylineo += 1
+[ \\t]+        ; // Skip whitespace and tab
+.              { return yytext[0]; }
+
 %%
 
+int main(void)
+{
+    yylex();
+    return 0;
+}
 
