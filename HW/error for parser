@@ -1,7 +1,3 @@
-gil@gil-VirtualBox:~/Desktop/compilation course/project - compiler$ bison -d parser.y
-parser.y: warning: 144 shift/reduce conflicts [-Wconflicts-sr]
-parser.y: note: rerun with option '-Wcounterexamples' to generate conflict counterexamples
-gil@gil-VirtualBox:~/Desktop/compilation course/project - compiler$ flex scanner.l
 gil@gil-VirtualBox:~/Desktop/compilation course/project - compiler$ cc -o part1 y.tab.c lex.yy.c -ll
 cc1: fatal error: y.tab.c: No such file or directory
 compilation terminated.
@@ -9,8 +5,3 @@ scanner.l:2:10: fatal error: y.tab.h: No such file or directory
     2 | #include "y.tab.h"
       |          ^~~~~~~~~
 compilation terminated.
-gil@gil-VirtualBox:~/Desktop/compilation course/project - compiler$ ./part1
-bash: ./part1: No such file or directory
-gil@gil-VirtualBox:~/Desktop/compilation course/project - compiler$ ./part1.t
-bash: ./part1.t: Permission denied
-
