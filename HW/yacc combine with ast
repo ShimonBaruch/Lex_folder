@@ -22,8 +22,13 @@ void yyerror(const char *s);
 %token INT_LIT STRING_LIT CHAR_LIT ID
 %token SEMICOLON COMMA LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET COLON
 
+%left OR
+%left AND
+%left EQ NE
+%left LE GE LT GT
 %left '+' '-'
 %left '*' '/'
+%right NOT
 
 %%
 
@@ -161,7 +166,7 @@ expression:
     | expression MINUS expression
     | expression TIMES expression
     | expression DIVIDE expression
-    | MINUS expression
+    | MINUS expression %prec NOT
     | NOT expression
     | expression EQ expression
     | expression NE expression
