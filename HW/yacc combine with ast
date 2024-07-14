@@ -1,27 +1,26 @@
 %{
-    #include<stdio.h>
-    #include<string.h>
-    #include<stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-    typedef struct node
-    {
-        char *token;
-        struct node *left;
-        struct node *right;
-    } node;
+typedef struct node {
+    char *token;
+    struct node *left;
+    struct node *right;
+} node;
 
-    node *mknode(char *token, node *left, node *right);
-    void printtree(node *tree, int tabs);
-    void yyerror(const char *s);
+node *mknode(char *token, node *left, node *right);
+void printtree(node *tree, int tabs);
+void yyerror(const char *s);
 
-    #define YYSTYPE struct node*
+#define YYSTYPE struct node*
 %}
 
 %token BOOL CHAR INT DOUBLE FLOAT STRING INT_PTR CHAR_PTR DOUBLE_PTR FLOAT_PTR
 %token IF ELSE WHILE FOR VAR ARGS PUBLIC PRIVATE STATIC RETURN NULLPTR VOID DO
 %token AND OR EQ NE LE GE LT GT PLUS MINUS TIMES DIVIDE NOT ADDR ASSIGN
 %token INT_LIT STRING_LIT CHAR_LIT ID
-%token SEMICOLON COMMA LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
+%token SEMICOLON COMMA LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET COLON
 
 %left '+' '-'
 %left '*' '/'
@@ -71,7 +70,7 @@ parameter_list:
     ;
 
 parameter:
-    type ID
+    type COLON ID
     ;
 
 static_opt:
@@ -115,7 +114,6 @@ statement:
 
 assignment:
     ID ASSIGN expression
-    | STRING_LIT LBRACKET expression RBRACKET ASSIGN expression
     | TIMES ID ASSIGN expression
     ;
 
@@ -177,20 +175,6 @@ expression:
     | TIMES ID
     | LPAREN expression RPAREN
     ;
-
-s: assignments { printtree($1, -1); printf("\n"); };
-assignments: assign assignments { $$ = mknode("", $1, $2); } | { $$ = mknode("", NULL, NULL); };
-assign: ID ASSIGN expr SEMICOLON { $$ = mknode($2->token, $1, $3); };
-expr:
-    expr PLUS expr { $$ = mknode($2->token, $1, $3); }
-    | expr MINUS expr { $$ = mknode($2->token, $1, $3); }
-    | expr TIMES expr { $$ = mknode($2->token, $1, $3); }
-    | expr DIVIDE expr { $$ = mknode($2->token, $1, $3); }
-    | LPAREN expr RPAREN { $$ = mknode("", mknode("(", $2, NULL), mknode(")", NULL, NULL)); }
-    | ID { $$ = $1; }
-    | INT_LIT { $$ = $1; }
-    | STRING_LIT { $$ = $1; }
-    | CHAR_LIT { $$ = $1; };
 
 %%
 
