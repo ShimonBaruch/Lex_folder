@@ -2,21 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "node.h" // כלול את הקובץ header שמכיל את הגדרת Node
 
 void yyerror(const char *s);
 int yylex(void);
-
-typedef struct node {
-    char *type;
-    struct node *left;
-    struct node *right;
-    struct node *next;
-    char *value;
-} Node;
-
-Node *create_node(char *type, Node *left, Node *right, Node *next, char *value);
-void print_ast(Node *node, int depth);
-void free_ast(Node *node);
 
 Node *ast_root = NULL;
 %}
@@ -289,8 +278,7 @@ expression:
 term:
     term MULTIPLY factor
     {
-        $$ = create_node("TERM", $1, $3, NULL,
-    "*");
+        $$ = create_node("TERM", $1, $3, NULL, "*");
     }
     | term DIVIDE factor
     {
@@ -310,6 +298,10 @@ factor:
         $$ = create_node("INT_LITERAL", NULL, NULL, NULL, strdup(buffer));
     }
     | FLOAT_LITERAL
+    {
+        char buffer[20];
+        sprintf(buffer, "%f", $1);
+        $$ = create_node("FLOAT_LITERAL
     {
         char buffer[20];
         sprintf(buffer, "%f", $1);
