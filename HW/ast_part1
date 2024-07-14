@@ -1,25 +1,8 @@
-#ifndef NODE_H
-#define NODE_H
-
-typedef struct node {
-    char *token;
-    struct node *left;
-    struct node *right;
-} node;
-
-node* mknode(char* token, node *left, node *right);
-void Printtree(node *tree);
-void printTabs(int n);
-
-#endif // NODE_H
-
-====
-
 %{
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "node.h" // כלול את הקובץ הזה שמכיל את הגדרת Node
+#include "node.h"
 
 void yyerror(const char *s);
 int yylex(void);
@@ -35,11 +18,11 @@ node *ast_root = NULL;
 %token <string> COMMENT WHILE IF ELSE FOR 
 %token <string> RETURN
 %token <string> BOOL STRING CHARPTR CHAR INT INTPTR PROCEDUR
-%token <string> AND ADDRESS EQL ASSINGMENT OR LENGTH GREATEREQL GREATER LESSEQL LESS NOTEQL NOT
+%token <string> AND ADDRESS EQL ASSIGNMENT OR LENGTH GREATEREQL GREATER LESSEQL LESS NOTEQL NOT
 %token <string> DIVISION PLUS MINUS MULTI VARIABLE
 %token <string> STRING_LTL REAL_LTL CHAR_LTL NULLL
 %token <string> MAIN IDENTIFIER SEMICOLON COMMA OPENPAREN CLOSEPAREN OPENBRACKET CLOSEBRACKET OPENBRACE CLOSEBRACE
-%token <string> DECIMAL_LTL HEX_LTL BOOLTRUE BOOLFALSE  REAL REALPTR FUNCTION COLON  DEREFRENCE 
+%token <string> DECIMAL_LTL HEX_LTL BOOLTRUE BOOLFALSE  REAL REALPTR FUNCTION COLON  DEREFERENCE 
 
 %left PLUS MINUS RETURN
 %left MULTI DIVISION
@@ -52,12 +35,14 @@ node *ast_root = NULL;
 %nonassoc IF
 %nonassoc ELSE 
 
-%type <node> address_expr address_exprs stmnts stmnt_block derefrence_expr  expr_list call_func 
-%type <node> expr lhs assmnt_stmnt new_block 
+%type <node> address_expr address_exprs stmnts stmnt_block dereference_expr  expr_list call_func 
+%type <node> expr lhs assignment_stmnt new_block 
 %type <node> stmnt type_pro type_id var_id declear paren_expr
 %type <node> pro_body para_list para_pro procedure procedures
 %type <node> main program project declears RET
+
 %%
+
 // Main project
 project: cmmnt program { Printtree($2); printf("syntax valid\n"); };
 
@@ -119,18 +104,18 @@ stmnts: stmnts stmnt { $$ = mknode("STMNT", $1, $2); }
 | stmnt { $$ = mknode("STMNT", NULL, $1); };
 
 // statement
-stmnt: assmnt_stmnt { $$ = $1; }
+stmnt: assignment_stmnt { $$ = $1; }
 | RETURN expr SEMICOLON { $$ = mknode("RETURN", $2, NULL); }
 | IF expr stmnt { $$ = mknode("IF", $2, $3); }
 | IF expr stmnt ELSE stmnt { $$ = mknode("IFELSE", mknode("IF", $2, $3), $5); }
 | WHILE expr stmnt { $$ = mknode("WHILE", $2, $3); }
-| FOR assmnt_stmnt expr SEMICOLON expr stmnt { $$ = mknode("FOR", $2, mknode("COND", $3, mknode("INCR", $5, $6))); }
+| FOR assignment_stmnt expr SEMICOLON expr stmnt { $$ = mknode("FOR", $2, mknode("COND", $3, mknode("INCR", $5, $6))); }
 | PROCEDUR IDENTIFIER OPENPAREN para_list CLOSEPAREN stmnt_block { $$ = mknode("PROCEDUR", mknode($2, NULL, $4), $6); }
 | PROCEDUR IDENTIFIER OPENPAREN CLOSEPAREN stmnt_block { $$ = mknode("PROCEDUR", mknode($2, NULL, NULL), $5); }
 | { $$ = NULL; };
 
 // assignment statement
-assmnt_stmnt: lhs ASSINGMENT expr SEMICOLON { $$ = mknode("ASSIGN", $1, $3); };
+assignment_stmnt: lhs ASSIGNMENT expr SEMICOLON { $$ = mknode("ASSIGN", $1, $3); };
 
 // left-hand side
 lhs: IDENTIFIER { $$ = mknode($1, NULL, NULL); };
@@ -160,6 +145,22 @@ expr: expr PLUS expr { $$ = mknode("PLUS", $1, $3); }
 | BOOLFALSE { $$ = mknode("FALSE", NULL, NULL); }
 | NULLL { $$ = mknode("NULL", NULL, NULL); }
 ;
+
+// Added missing rules
+address_expr: IDENTIFIER { $$ = mknode($1, NULL, NULL); }
+| dereference_expr { $$ = $1; }
+| address_exprs { $$ = $1; };
+
+address_exprs: address_expr { $$ = $1; }
+| address_exprs COMMA address_expr { $$ = mknode("ADDRESS_EXPR", $1, $3); };
+
+dereference_expr: DEREFERENCE IDENTIFIER { $$ = mknode("DEREFERENCE", $2, NULL); };
+
+expr_list: expr { $$ = $1; }
+| expr_list COMMA expr { $$ = mknode("EXPR_LIST", $1, $3); };
+
+call_func: IDENTIFIER OPENPAREN expr_list CLOSEPAREN { $$ = mknode("CALL_FUNC", mknode($1, NULL, NULL), $3); }
+| IDENTIFIER OPENPAREN CLOSEPAREN { $$ = mknode("CALL_FUNC", mknode($1, NULL, NULL), NULL); };
 
 %%
 
@@ -212,85 +213,3 @@ int main(void)
     }
     return 0;
 }
-
-===
-
-%{
-#include <stdio.h>
-#include "parser.tab.h"
-#include "node.h"
-%}
-
-%%
-
-bool           { return BOOL; }
-char           { return CHAR; }
-int            { return INT; }
-real           { return REAL; }
-string         { return STRING; }
-int\\*         { return INTPTR; }
-char\\*        { return CHARPTR; }
-real\\*        { return REALPTR; }
-
-if             { return IF; }
-else           { return ELSE; }
-while          { return WHILE; }
-for            { return FOR; }
-var            { return VARIABLE; }
-func           { return FUNCTION; }
-proc           { return PROCEDUR; }
-null           { return NULLL; }
-Main           { return MAIN; }
-
-"&&"           { return AND; }
-"/"            { return DIVISION; }
-"="            { return ASSINGMENT; }
-"=="           { return EQL; }
-">"            { return GREATER; }
-">="           { return GREATEREQL; }
-"<"            { return LESS; }
-"<="           { return LESSEQL; }
-"-"            { return MINUS; }
-"!"            { return NOT; }
-"!="           { return NOTEQL; }
-"||"           { return OR; }
-"+"            { return PLUS; }
-"*"            { return MULTI; }
-"&"            { return ADDRESS; }
-"^"            { return DEREFRENCE; }
-
-"|"            { return LENGTH; }
-";"            { return SEMICOLON; }
-":"            { return COLON; }
-","            { return COMMA; }
-"{"            { return OPENBRACE; }
-"}"            { return CLOSEBRACE; }
-"("            { return OPENPAREN; }
-")"            { return CLOSEPAREN; }
-"["            { return OPENBRACKET; }
-"]"            { return CLOSEBRACKET; }
-
-"/""%".*"%"/"  { return COMMENT; }
-
-return         { return RETURN; }
-true           { return BOOLTRUE; }
-false          { return BOOLFALSE; }
-[a-zA-Z][a-zA-Z0-9_]*    { yylval.string = strdup(yytext); return IDENTIFIER; }
-"\\""[^"]*\\""  { yylval.string = strdup(yytext); return STRING_LTL; }
-\\'.\\'         { yylval.string = strdup(yytext); return CHAR_LTL; }
-[+-]?[1-9][0-9]*|[0-9]  { yylval.string = strdup(yytext); return DECIMAL_LTL; }
-0(x|X)[0-9A-F]+ { yylval.string = strdup(yytext); return HEX_LTL; }
-[-+]?[0-9]*\\.?[0-9]*[eE]?[-+]?[0-9]+ { yylval.string = strdup(yytext); return REAL_LTL; }
-
-[\\n]          { yylineno++; } // For each line (enter = \\n), do yylineo += 1
-[ \\t]+        ; // Skip whitespace and tab
-.              { return yytext[0]; }
-
-%%
-
-int main(void)
-{
-    yylex();
-    return 0;
-}
-
