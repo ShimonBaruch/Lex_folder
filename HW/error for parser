@@ -1,7 +1,1694 @@
-gil@gil-VirtualBox:~/Desktop/compilation course/project - compiler$ cc -o part1 y.tab.c lex.yy.c -ll
-cc1: fatal error: y.tab.c: No such file or directory
-compilation terminated.
-scanner.l:2:10: fatal error: y.tab.h: No such file or directory
-    2 | #include "y.tab.h"
-      |          ^~~~~~~~~
-compilation terminated.
+gil@gil-VirtualBox:~/Desktop/compilation course/project - compiler$ bison -d parser.y -Wcounterexamples
+parser.y: warning: 169 shift/reduce conflicts [-Wconflicts-sr]
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: MINUS expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression               PLUS expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: MINUS expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression               MINUS expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: MINUS expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression               TIMES expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: MINUS expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression               DIVIDE expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: MINUS expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression               EQ expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: MINUS expression • NE expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression               NE expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: MINUS expression • LE expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression               LE expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: MINUS expression • GE expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression               GE expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: MINUS expression • LT expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression               LT expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: MINUS expression • GT expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression               GT expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: MINUS expression • AND expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression               AND expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: MINUS expression • OR expression
+  Shift derivation
+    expression
+    ↳ 62: MINUS expression
+                ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression               OR expression
+          ↳ 62: MINUS expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: NOT expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression             PLUS expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: NOT expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression             MINUS expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: NOT expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression             TIMES expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: NOT expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression             DIVIDE expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: NOT expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression             EQ expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: NOT expression • NE expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression             NE expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: NOT expression • LE expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression             LE expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: NOT expression • GE expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression             GE expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: NOT expression • LT expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression             LT expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: NOT expression • GT expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression             GT expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: NOT expression • AND expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression             AND expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: NOT expression • OR expression
+  Shift derivation
+    expression
+    ↳ 63: NOT expression
+              ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression             OR expression
+          ↳ 63: NOT expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression AND expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                        PLUS expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression AND expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                        MINUS expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression AND expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                        TIMES expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression AND expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                        DIVIDE expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression AND expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                        EQ expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression AND expression • NE expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                        NE expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression AND expression • LE expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                        LE expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression AND expression • GE expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                        GE expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression AND expression • LT expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                        LT expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression AND expression • GT expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                        GT expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression AND expression • AND expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                        AND expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression AND expression • OR expression
+  Shift derivation
+    expression
+    ↳ 70: expression AND expression
+                         ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                        OR expression
+          ↳ 70: expression AND expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression OR expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                       PLUS expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression OR expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                       MINUS expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression OR expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                       TIMES expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression OR expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                       DIVIDE expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression OR expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                       EQ expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression OR expression • NE expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                       NE expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression OR expression • LE expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                       LE expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression OR expression • GE expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                       GE expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression OR expression • LT expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                       LT expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression OR expression • GT expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                       GT expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression OR expression • AND expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                       AND expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression OR expression • OR expression
+  Shift derivation
+    expression
+    ↳ 71: expression OR expression
+                        ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                       OR expression
+          ↳ 71: expression OR expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression EQ expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                       PLUS expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression EQ expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                       MINUS expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression EQ expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                       TIMES expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression EQ expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                       DIVIDE expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression EQ expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                       EQ expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression EQ expression • NE expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                       NE expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression EQ expression • LE expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                       LE expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression EQ expression • GE expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                       GE expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression EQ expression • LT expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                       LT expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression EQ expression • GT expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                       GT expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression EQ expression • AND expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                       AND expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression EQ expression • OR expression
+  Shift derivation
+    expression
+    ↳ 64: expression EQ expression
+                        ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                       OR expression
+          ↳ 64: expression EQ expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression NE expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                       PLUS expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression NE expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                       MINUS expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression NE expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                       TIMES expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression NE expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                       DIVIDE expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression NE expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                       EQ expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression NE expression • NE expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                       NE expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression NE expression • LE expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                       LE expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression NE expression • GE expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                       GE expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression NE expression • LT expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                       LT expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression NE expression • GT expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                       GT expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression NE expression • AND expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                       AND expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression NE expression • OR expression
+  Shift derivation
+    expression
+    ↳ 65: expression NE expression
+                        ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                       OR expression
+          ↳ 65: expression NE expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression LE expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                       PLUS expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression LE expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                       MINUS expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression LE expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                       TIMES expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression LE expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                       DIVIDE expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression LE expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                       EQ expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression LE expression • NE expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                       NE expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression LE expression • LE expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                       LE expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression LE expression • GE expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                       GE expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression LE expression • LT expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                       LT expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression LE expression • GT expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                       GT expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression LE expression • AND expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                       AND expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression LE expression • OR expression
+  Shift derivation
+    expression
+    ↳ 66: expression LE expression
+                        ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                       OR expression
+          ↳ 66: expression LE expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression GE expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                       PLUS expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression GE expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                       MINUS expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression GE expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                       TIMES expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression GE expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                       DIVIDE expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression GE expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                       EQ expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression GE expression • NE expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                       NE expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression GE expression • LE expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                       LE expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression GE expression • GE expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                       GE expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression GE expression • LT expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                       LT expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression GE expression • GT expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                       GT expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression GE expression • AND expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                       AND expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression GE expression • OR expression
+  Shift derivation
+    expression
+    ↳ 67: expression GE expression
+                        ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                       OR expression
+          ↳ 67: expression GE expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression LT expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                       PLUS expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression LT expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                       MINUS expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression LT expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                       TIMES expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression LT expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                       DIVIDE expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression LT expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                       EQ expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression LT expression • NE expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                       NE expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression LT expression • LE expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                       LE expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression LT expression • GE expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                       GE expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression LT expression • LT expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                       LT expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression LT expression • GT expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                       GT expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression LT expression • AND expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                       AND expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression LT expression • OR expression
+  Shift derivation
+    expression
+    ↳ 68: expression LT expression
+                        ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                       OR expression
+          ↳ 68: expression LT expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression GT expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                       PLUS expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression GT expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                       MINUS expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression GT expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                       TIMES expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression GT expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                       DIVIDE expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression GT expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                       EQ expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression GT expression • NE expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                       NE expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression GT expression • LE expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                       LE expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression GT expression • GE expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                       GE expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression GT expression • LT expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                       LT expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression GT expression • GT expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                       GT expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression GT expression • AND expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                       AND expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression GT expression • OR expression
+  Shift derivation
+    expression
+    ↳ 69: expression GT expression
+                        ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                       OR expression
+          ↳ 69: expression GT expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression PLUS expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                         PLUS expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression PLUS expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                         MINUS expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression PLUS expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                         TIMES expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression PLUS expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                         DIVIDE expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression PLUS expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                         EQ expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression PLUS expression • NE expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                         NE expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression PLUS expression • LE expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                         LE expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression PLUS expression • GE expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                         GE expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression PLUS expression • LT expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                         LT expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression PLUS expression • GT expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                         GT expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression PLUS expression • AND expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                         AND expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression PLUS expression • OR expression
+  Shift derivation
+    expression
+    ↳ 58: expression PLUS expression
+                          ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                         OR expression
+          ↳ 58: expression PLUS expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression MINUS expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                          PLUS expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression MINUS expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                          MINUS expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression MINUS expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                          TIMES expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression MINUS expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                          DIVIDE expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression MINUS expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                          EQ expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression MINUS expression • NE expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                          NE expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression MINUS expression • LE expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                          LE expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression MINUS expression • GE expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                          GE expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression MINUS expression • LT expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                          LT expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression MINUS expression • GT expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                          GT expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression MINUS expression • AND expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                          AND expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression MINUS expression • OR expression
+  Shift derivation
+    expression
+    ↳ 59: expression MINUS expression
+                           ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                          OR expression
+          ↳ 59: expression MINUS expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression TIMES expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                          PLUS expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression TIMES expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                          MINUS expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression TIMES expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                          TIMES expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression TIMES expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                          DIVIDE expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression TIMES expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                          EQ expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression TIMES expression • NE expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                          NE expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression TIMES expression • LE expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                          LE expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression TIMES expression • GE expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                          GE expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression TIMES expression • LT expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                          LT expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression TIMES expression • GT expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                          GT expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression TIMES expression • AND expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                          AND expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression TIMES expression • OR expression
+  Shift derivation
+    expression
+    ↳ 60: expression TIMES expression
+                           ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                          OR expression
+          ↳ 60: expression TIMES expression •
+parser.y: warning: shift/reduce conflict on token PLUS [-Wcounterexamples]
+  Example: expression DIVIDE expression • PLUS expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 58: expression • PLUS expression
+  Reduce derivation
+    expression
+    ↳ 58: expression                           PLUS expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token MINUS [-Wcounterexamples]
+  Example: expression DIVIDE expression • MINUS expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 59: expression • MINUS expression
+  Reduce derivation
+    expression
+    ↳ 59: expression                           MINUS expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token TIMES [-Wcounterexamples]
+  Example: expression DIVIDE expression • TIMES expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 60: expression • TIMES expression
+  Reduce derivation
+    expression
+    ↳ 60: expression                           TIMES expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token DIVIDE [-Wcounterexamples]
+  Example: expression DIVIDE expression • DIVIDE expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 61: expression • DIVIDE expression
+  Reduce derivation
+    expression
+    ↳ 61: expression                           DIVIDE expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token EQ [-Wcounterexamples]
+  Example: expression DIVIDE expression • EQ expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 64: expression • EQ expression
+  Reduce derivation
+    expression
+    ↳ 64: expression                           EQ expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token NE [-Wcounterexamples]
+  Example: expression DIVIDE expression • NE expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 65: expression • NE expression
+  Reduce derivation
+    expression
+    ↳ 65: expression                           NE expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token LE [-Wcounterexamples]
+  Example: expression DIVIDE expression • LE expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 66: expression • LE expression
+  Reduce derivation
+    expression
+    ↳ 66: expression                           LE expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token GE [-Wcounterexamples]
+  Example: expression DIVIDE expression • GE expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 67: expression • GE expression
+  Reduce derivation
+    expression
+    ↳ 67: expression                           GE expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token LT [-Wcounterexamples]
+  Example: expression DIVIDE expression • LT expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 68: expression • LT expression
+  Reduce derivation
+    expression
+    ↳ 68: expression                           LT expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token GT [-Wcounterexamples]
+  Example: expression DIVIDE expression • GT expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 69: expression • GT expression
+  Reduce derivation
+    expression
+    ↳ 69: expression                           GT expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token AND [-Wcounterexamples]
+  Example: expression DIVIDE expression • AND expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 70: expression • AND expression
+  Reduce derivation
+    expression
+    ↳ 70: expression                           AND expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token OR [-Wcounterexamples]
+  Example: expression DIVIDE expression • OR expression
+  Shift derivation
+    expression
+    ↳ 61: expression DIVIDE expression
+                            ↳ 71: expression • OR expression
+  Reduce derivation
+    expression
+    ↳ 71: expression                           OR expression
+          ↳ 61: expression DIVIDE expression •
+parser.y: warning: shift/reduce conflict on token ELSE [-Wcounterexamples]
+  Example: IF LPAREN expression RPAREN IF LPAREN expression RPAREN statement • ELSE statement
+  Shift derivation
+    if_statement
+    ↳ 48: IF LPAREN expression RPAREN statement
+                                      ↳ 35: if_statement
+                                            ↳ 49: IF LPAREN expression RPAREN statement • ELSE statement
+  Reduce derivation
+    if_statement
+    ↳ 49: IF LPAREN expression RPAREN statement                                           ELSE statement
+                                      ↳ 35: if_statement
+                                            ↳ 48: IF LPAREN expression RPAREN statement •
