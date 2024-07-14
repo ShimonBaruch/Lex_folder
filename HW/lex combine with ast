@@ -1,5 +1,22 @@
 %{
 #include "y.tab.h"
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct ast_node {
+    char *token;
+    struct ast_node *left;
+    struct ast_node *right;
+} ASTNode;
+
+ASTNode *mknode(char *token, ASTNode *left, ASTNode *right) {
+    ASTNode *newNode = (ASTNode *)malloc(sizeof(ASTNode));
+    newNode->token = strdup(token);
+    newNode->left = left;
+    newNode->right = right;
+    return newNode;
+}
+
 %}
 
 %option noyywrap
@@ -11,10 +28,10 @@
 "double"    { return DOUBLE; }
 "float"     { return FLOAT; }
 "string"    { return STRING; }
-"int\*"     { return INT_PTR; }
-"char\*"    { return CHAR_PTR; }
-"double\*"  { return DOUBLE_PTR; }
-"float\*"   { return FLOAT_PTR; }
+"int\\*"    { return INT_PTR; }
+"char\\*"   { return CHAR_PTR; }
+"double\\*" { return DOUBLE_PTR; }
+"float\\*"  { return FLOAT_PTR; }
 "if"        { return IF; }
 "else"      { return ELSE; }
 "while"     { return WHILE; }
@@ -49,12 +66,7 @@
 \"([^\\\"]|\\.)*\"   { yylval.sval = strdup(yytext); return STRING_LIT; }
 \'[^\']\'   { yylval.cval = yytext[1]; return CHAR_LIT; }
 
-[0-9]+ {yylval = mknode(yytext,NULL,NULL);return NUM;}
-[a-zA-z][a-zA-Z0-9]* {yylval = mknode(yytext,NULL,NULL);return ID;}
-[\t ] ;
-. {yylval = mknode(yytext,NULL,NULL);return yytext[0];}
-
-[a-zA-Z_][a-zA-Z0-9_]* { yylval.sval = strdup(yytext); return ID; }
+[a-zA-Z_][a-zA-Z0-9_]* { yylval.node = mknode(yytext, NULL, NULL); return ID; }
 
 ";"         { return SEMICOLON; }
 ","         { return COMMA; }
