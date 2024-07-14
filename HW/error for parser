@@ -1,18 +1,11 @@
-parser.y:60.118-119: error: $8 of ‘function’ has no declared type
-   60 | ...ON", $2, $8, NULL, $3->sval); }
-      |             ^~
-parser.y:61.121-122: error: $8 of ‘function’ has no declared type
-   61 | ...ON", $2, $8, NULL, $3->sval); }
-      |             ^~
-parser.y:62.113-114: error: $7 of ‘function’ has no declared type
-   62 | ...ON", $2, $7, NULL, $3->sval); }
-      |             ^~
-parser.y:63.114-115: error: $7 of ‘function’ has no declared type
-   63 | ...ON", $2, $7, NULL, $3->sval); }
-      |             ^~
-parser.y:147.110-111: error: $5 of ‘for_statement’ has no declared type
-  147 | ... $3, $4, $5, $7); }
-      |             ^~
-parser.y:147.114-115: error: $7 of ‘for_statement’ has no declared type
-  147 | ... $4, $5, $7); }
-      |             ^~
+cc -o part1 y.tab.c -ll -Ly
+y.tab.c: In function ‘yyparse’:
+y.tab.c:1324:16: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
+ 1324 |       yychar = yylex ();
+      |                ^~~~~
+In file included from parser.y:181:
+scanner.l: At top level:
+scanner.l:2:10: fatal error: y.tab.h: No such file or directory
+    2 | #include "y.tab.h"
+      |          ^~~~~~~~~
+compilation terminated.
