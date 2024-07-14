@@ -1,18 +1,19 @@
-%token NUM ID
-%left '+' '-'
-%left '*' '/'
 %{
     #include<stdio.h>
     #include<string.h>
     #include<stdlib.h>
+
     typedef struct node
     {
         char *token;
         struct node *left;
         struct node *right;
     } node;
+
     node *mknode(char *token, node *left, node *right);
     void printtree(node *tree, int tabs);
+    void yyerror(const char *s);
+
     #define YYSTYPE struct node*
 %}
 
@@ -21,6 +22,9 @@
 %token AND OR EQ NE LE GE LT GT PLUS MINUS TIMES DIVIDE NOT ADDR ASSIGN
 %token INT_LIT STRING_LIT CHAR_LIT ID
 %token SEMICOLON COMMA LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
+
+%left '+' '-'
+%left '*' '/'
 
 %%
 
@@ -85,7 +89,7 @@ declarations:
     ;
 
 declaration:
-    VAR type SEMICOLON var_list SEMICOLON
+    VAR type COLON var_list SEMICOLON
     ;
 
 var_list:
@@ -174,48 +178,46 @@ expression:
     | LPAREN expression RPAREN
     ;
 
-s: assignments {printtree($1, -1); printf("\n");};
-assignments: assign assignments {$$ = mknode("", $1, $2);}| {$$ = mknode("",NULL,NULL);};
-assign: ID '=' expr ';' {$$ = mknode($2->token, $1, $3);};
-expr: expr '+' expr {$$ = mknode($2->token, $1, $3);}
-    |expr '-' expr {$$ = mknode($2->token, $1, $3);}
-    |expr '*' expr {$$ = mknode($2->token, $1, $3);}
-    |expr '/' expr {$$ = mknode($2->token, $1, $3);}
-    |'(' expr ')' {$$ = mknode("", mknode("(", $2, NULL), mknode(")", NULL, NULL));}
-    |ID {$$ = $1;}
-    |NUM {$$ = $1;}; 
+s: assignments { printtree($1, -1); printf("\n"); };
+assignments: assign assignments { $$ = mknode("", $1, $2); } | { $$ = mknode("", NULL, NULL); };
+assign: ID ASSIGN expr SEMICOLON { $$ = mknode($2->token, $1, $3); };
+expr:
+    expr PLUS expr { $$ = mknode($2->token, $1, $3); }
+    | expr MINUS expr { $$ = mknode($2->token, $1, $3); }
+    | expr TIMES expr { $$ = mknode($2->token, $1, $3); }
+    | expr DIVIDE expr { $$ = mknode($2->token, $1, $3); }
+    | LPAREN expr RPAREN { $$ = mknode("", mknode("(", $2, NULL), mknode(")", NULL, NULL)); }
+    | ID { $$ = $1; }
+    | INT_LIT { $$ = $1; }
+    | STRING_LIT { $$ = $1; }
+    | CHAR_LIT { $$ = $1; };
 
 %%
 
 #include "lex.yy.c"
 
-int main() 
-{
+int main() {
     return yyparse();
 }
 
-node *mknode(char *token,node *left,node *right) { 
-    node *newnode = (node*)malloc(sizeof(node)); 
-    char *newstr = (char*)malloc(sizeof(token) + 1); 
-    strcpy(newstr,token); 
-    newnode->left = left; 
-    newnode->right = right; 
-    newnode->token = newstr; 
-    return newnode; 
+node *mknode(char *token, node *left, node *right) {
+    node *newnode = (node*)malloc(sizeof(node));
+    newnode->token = strdup(token);
+    newnode->left = left;
+    newnode->right = right;
+    return newnode;
 }
 
-void printtree(node *tree, int tabs){
-    for(int i=0; i<tabs;i++,printf("\t"));
-    if(strcmp(tree->token,""))
-        printf("%s\n", tree->token);
-    if(tree->left)
-        printtree(tree->left, tabs+1);
-    if(tree->right)
-        printtree(tree->right, tabs+1);
+void printtree(node *tree, int tabs) {
+    if (tree == NULL) return;
+    for (int i = 0; i < tabs; i++) {
+        printf("\t");
+    }
+    printf("%s\n", tree->token);
+    printtree(tree->left, tabs + 1);
+    printtree(tree->right, tabs + 1);
 }
 
-int yyerror()
-{
-    printf("Couldn't finish parsing.\n");
-    return 0;
+void yyerror(const char *s) {
+    printf("Error: %s\n", s);
 }
