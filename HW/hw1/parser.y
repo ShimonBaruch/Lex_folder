@@ -2,7 +2,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
-	#include "lex.my_prefix.c"
+	#include "lex.yy.c"
 	typedef struct node
 	{
 		char *token;
