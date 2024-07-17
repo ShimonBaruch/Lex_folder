@@ -2,7 +2,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
-	#include "lex.yy.c"
+	
 	typedef struct node
 	{
 		char *token;
@@ -24,24 +24,22 @@
 }
 
 
-
 %token <string> COMMENT WHILE IF ELSE FOR 
 %token <string> RETURN
 %token <string> BOOL STRING CHARPTR CHAR INT INTPTR PROCEDUR
 %token <string> AND ADDRESS EQL ASSINGMENT OR LENGTH GREATEREQL GREATER LESSEQL LESS NOTEQL NOT
 %token <string> DIVISION PLUS MINUS MULTI VARIABLE
 %token <string> STRING_LTL REAL_LTL CHAR_LTL NULLL
-%token <string> MAIN IDENTIFIER SEMICOLON COMMA OPENPAREN CLOSEPAREN OPENBRACKET CLOSEBRACKET OPENBRACE CLOSEBRACE
+%token <string> MAIN IDENTIFIER ';' ',' '(' ')' '[' ']' '{' '}'
 %token <string> DECIMAL_LTL HEX_LTL BOOLTRUE BOOLFALSE  REAL REALPTR FUNCTION COLON  DEREFRENCE 
 
 %left PLUS MINUS RETURN
 %left MULTI DIVISION
 %left EQL NOTEQL LESS LESSEQL GREATEREQL GREATER OR AND
-%left SEMICOLON 
-%right NOT CLOSEBRACE
+%left ';' 
+%right NOT '}'
 
 %nonassoc IDENTIFIER 
-%nonassoc OPENPAREN
 %nonassoc IF
 %nonassoc ELSE 
 
@@ -61,23 +59,21 @@ program: procedures main {$$=mknode("CODE",$1,$2);}
 cmmnt: COMMENT cmmnt| ;
 
  //this is the main
-main: PROCEDUR MAIN OPENPAREN CLOSEPAREN OPENBRACE pro_body CLOSEBRACE
+main: PROCEDUR MAIN '(' ')' '{' pro_body '}'
 {
-$$=mknode("proc",
-mknode("Main",mknode("\n",NULL,NULL),NULL),
-mknode("ARGS",NULL,$6));
-}	| {$$=NULL;};
+$$=mknode("proc", mknode("Main",mknode("\n",NULL,NULL),NULL), mknode("ARGS",NULL,$6));}	
+| {$$=NULL;};
 
 //functions
 procedures: procedures  procedure {$$=mknode("",$1,$2);}
 	| {$$=NULL;};
 
 //function
-procedure: FUNCTION IDENTIFIER OPENPAREN para_pro CLOSEPAREN cmmnt RETURN type_pro  OPENBRACE  pro_body RET CLOSEBRACE
+procedure: FUNCTION IDENTIFIER '(' para_pro ')' cmmnt RETURN type_pro  '{'  pro_body RET '}'
 { 
-		$$=mknode("func",mknode($2,mknode("\n",NULL,NULL),mknode("ARGS",$4,mknode("return",$8,NULL))),mknode("",$10,$11));	
+$$=mknode("func",mknode($2,mknode("\n",NULL,NULL),mknode("ARGS",$4,mknode("return",$8,NULL))),mknode("",$10,$11));	
 }
-| PROCEDUR IDENTIFIER OPENPAREN para_pro CLOSEPAREN  OPENBRACE  pro_body CLOSEBRACE
+| PROCEDUR IDENTIFIER '(' para_pro ')'  '{'  pro_body '}'
 {
 	$$=mknode("proc",mknode($2,mknode("\n",NULL,NULL),NULL),mknode("ARGS",$4,$7));
 };
@@ -90,7 +86,7 @@ para_pro: para_list {$$=$1;}
 //list of parameter
 
 para_list: var_id COLON type_id {$$=mknode("(",$3,mknode("",$1,mknode(")",NULL,NULL)));}
-	|  para_list SEMICOLON cmmnt  para_list 
+	|  para_list ';' cmmnt  para_list 
 	{$$=mknode("",$1,mknode("",$4,NULL));}	;
 
  //Procedure body
@@ -104,19 +100,19 @@ pro_body: cmmnt  procedures declears stmnts
 declears: declears declear  {$$=mknode("",$1,$2);} | {$$=NULL;}  ;
 
 //declaration of varibals/ 
-declear: VARIABLE var_id COLON type_id cmmnt SEMICOLON cmmnt
+declear: VARIABLE var_id ':' type_id cmmnt ';' cmmnt
 {
 	$$=mknode("var", $4,$2);
 };
 
 //list of id like a,b,c/
-var_id: IDENTIFIER COMMA var_id {$$=mknode($1, mknode(" ", $3, NULL),NULL);}
+var_id: IDENTIFIER ',' var_id {$$=mknode($1, mknode(" ", $3, NULL),NULL);}
 	| IDENTIFIER {$$=mknode($1, NULL, NULL);} ;
 
 
 //types without string/
 type_id: BOOL {$$=mknode("boolean", NULL, NULL);}
-	| STRING OPENBRACKET DECIMAL_LTL CLOSEBRACKET {$$=mknode("string", NULL, NULL);}
+	| STRING '[' DECIMAL_LTL ']' {$$=mknode("string", NULL, NULL);}
 	| CHAR {$$=mknode("char", NULL, NULL);}
 	| INT {$$=mknode("int", NULL, NULL);}
 	| REAL {$$=mknode("real", NULL, NULL);}
@@ -141,25 +137,25 @@ type_pro: BOOL {$$=mknode("boolean", NULL, NULL);}
 stmnts: stmnts stmnt {$$=mknode("",$1,$2);} | {$$=NULL;};
 
 //stmnt_block
-stmnt_block: stmnt {$$=$1;}|RETURN expr SEMICOLON {$$=mknode("return",$2,NULL);};
+stmnt_block: stmnt {$$=$1;}|RETURN expr ';' {$$=mknode("return",$2,NULL);};
 
 //new block in stmnts
-new_block: OPENBRACE cmmnt declears stmnts RET CLOSEBRACE cmmnt
+new_block: '{' cmmnt declears stmnts RET '}' cmmnt
 {
 	$$=mknode("{",$3,mknode("", $4, mknode("",$5,mknode("}",NULL,NULL))));
 };
 
 
-RET: RETURN expr SEMICOLON cmmnt {$$=mknode("return",$2,NULL);}| {$$=NULL;};
+RET: RETURN expr ';' cmmnt {$$=mknode("return",$2,NULL);}| {$$=NULL;};
 
 //Statment
-stmnt: IF OPENPAREN expr CLOSEPAREN  stmnt_block 
+stmnt: IF '(' expr ')'  stmnt_block 
 {
 	$$=mknode("if",
 	mknode("(", $3, 
 	mknode(")",NULL,NULL)),$5);
 }%prec IF
-| IF OPENPAREN expr CLOSEPAREN   stmnt_block    ELSE  stmnt_block  
+| IF '(' expr ')'   stmnt_block    ELSE  stmnt_block  
 {
 	$$=mknode("if-else",
 	mknode("(", $3, 
@@ -167,13 +163,13 @@ stmnt: IF OPENPAREN expr CLOSEPAREN  stmnt_block
 	mknode("",$5,
 	mknode("",$7,NULL)));
 }
-| WHILE cmmnt OPENPAREN expr CLOSEPAREN  stmnt_block  
+| WHILE cmmnt '(' expr ')'  stmnt_block  
 {
 	$$=mknode("while",
 	mknode("(", $4, 
 	mknode(")",NULL,NULL)),$6);
 }
-| FOR cmmnt OPENPAREN assmnt_stmnt SEMICOLON expr SEMICOLON assmnt_stmnt CLOSEPAREN stmnt_block 
+| FOR cmmnt '(' assmnt_stmnt ';' expr ';' assmnt_stmnt ')' stmnt_block 
 {
 		$$= mknode("for",
 			mknode("(",
@@ -181,11 +177,9 @@ stmnt: IF OPENPAREN expr CLOSEPAREN  stmnt_block
 			mknode("",$8,
 			mknode(")",NULL,NULL))),$10);		
 }
-| assmnt_stmnt SEMICOLON cmmnt {$$=mknode("",$1,NULL);}
-| expr SEMICOLON cmmnt {$$=$1;}
+| assmnt_stmnt ';' cmmnt {$$=mknode("",$1,NULL);}
+| expr ';' cmmnt {$$=$1;}
 | new_block {$$=$1;};
-
-
 
 
 //assiment statment
@@ -196,7 +190,7 @@ assmnt_stmnt: lhs ASSINGMENT expr
 
 
 //lefd hand side id
-lhs: IDENTIFIER OPENBRACKET expr CLOSEBRACKET 
+lhs: IDENTIFIER '[' expr ']' 
 {
 	$$=mknode($1, mknode("[",$3,mknode("]",NULL,NULL)), NULL);
 } 
@@ -206,7 +200,7 @@ lhs: IDENTIFIER OPENBRACKET expr CLOSEBRACKET
 
 	
 //Expresion
-expr:  OPENPAREN expr CLOSEPAREN {$$=mknode("(",$2,mknode(")",NULL,NULL));}|
+expr:  '(' expr ')' {$$=mknode("(",$2,mknode(")",NULL,NULL));}|
 //bool oper
     expr EQL expr {$$=mknode("==",$1,$3);}
 	| expr NOTEQL expr {$$=mknode("!=",$1,$3);}
@@ -239,7 +233,7 @@ expr:  OPENPAREN expr CLOSEPAREN {$$=mknode("(",$2,mknode(")",NULL,NULL));}|
 		mknode($2,NULL,NULL),
 		mknode("|",NULL,NULL));
 	}
-	| IDENTIFIER OPENBRACKET expr CLOSEBRACKET 
+	| IDENTIFIER '[' expr ']' 
 	{$$=mknode($1,mknode("[",$3,mknode("]",NULL,NULL)),NULL);}
 	| IDENTIFIER {$$=mknode($1,NULL,NULL);}
 	| NULLL {$$=mknode("null",NULL,NULL);};
@@ -249,10 +243,10 @@ expr:  OPENPAREN expr CLOSEPAREN {$$=mknode("(",$2,mknode(")",NULL,NULL));}|
 address_exprs:ADDRESS address_exprs {$$=mknode($1,$2,NULL);} | address_expr {$$=$1;};
 
 address_expr: ADDRESS IDENTIFIER {$$=mknode("&",mknode($2,NULL,NULL),NULL);}
-	| ADDRESS OPENPAREN IDENTIFIER CLOSEPAREN {$$=mknode("&",mknode("(",mknode($3,NULL,NULL),NULL),mknode(")",NULL,NULL));}
-	| ADDRESS IDENTIFIER OPENBRACKET expr CLOSEBRACKET 
+	| ADDRESS '(' IDENTIFIER ')' {$$=mknode("&",mknode("(",mknode($3,NULL,NULL),NULL),mknode(")",NULL,NULL));}
+	| ADDRESS IDENTIFIER '[' expr ']' 
 	{$$=mknode("&", mknode($2,NULL,NULL), mknode("[",$4,mknode("]",NULL,NULL)));}
-	| ADDRESS OPENPAREN IDENTIFIER OPENBRACKET expr CLOSEBRACKET CLOSEPAREN 
+	| ADDRESS '(' IDENTIFIER '[' expr ']' ')' 
 	{
 		$$=mknode("&",
 		mknode("(", 
@@ -264,16 +258,16 @@ address_expr: ADDRESS IDENTIFIER {$$=mknode("&",mknode($2,NULL,NULL),NULL);}
 
 
 	derefrence_expr: DEREFRENCE IDENTIFIER {$$=mknode("^",mknode($2,NULL,NULL),NULL);}
-	| DEREFRENCE OPENPAREN expr CLOSEPAREN {$$=mknode("^",mknode("(",$3,NULL),mknode(")",NULL,NULL));}
-	| DEREFRENCE IDENTIFIER OPENBRACKET expr CLOSEBRACKET 
+	| DEREFRENCE '(' expr ')' {$$=mknode("^",mknode("(",$3,NULL),mknode(")",NULL,NULL));}
+	| DEREFRENCE IDENTIFIER '[' expr ']' 
 	{$$=mknode($1, mknode($2,NULL,NULL), mknode("[",$4,mknode("]",NULL,NULL)));};
 
 	//list of expreession
-expr_list: expr COMMA expr_list {$$=mknode("",$1,mknode(",",$3,NULL));} 
+expr_list: expr ',' expr_list {$$=mknode("",$1,mknode(",",$3,NULL));} 
 	| expr {$$=mknode("",$1,NULL);}
 	| {$$=NULL;};
 
-paren_expr:OPENPAREN expr_list CLOSEPAREN {$$=$2;};
+paren_expr:'(' expr_list ')' {$$=$2;};
 //call func rul 
 call_func: IDENTIFIER paren_expr {$$=mknode("Call func",mknode($1,NULL,NULL),mknode("ARGS",$2,NULL));} ;
 %%
@@ -455,8 +449,8 @@ int yyerror(char *e)
 {
 	int yydebug=1; 
 	fflush(stdout);
-	fprintf(stderr,"Error %s at line %d\n" ,e,yylineno);
-	fprintf(stderr, "does not accept '%s'\n",yytext);
+	fprintf(stderr,"Error %s at line %d\n" ,e);
+
 	
 	return 0;
 }

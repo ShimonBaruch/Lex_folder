@@ -1,13 +1,13 @@
 /*Scanner-file*/
 %{
 #include<stdio.h>
-#include "parser.tab.h"
+#include "y.tab.h"
 
 %}
  /*%x comment*/
 
 %%
-  /*Types /*Keywords Lexemes*/
+  /*Types Keywords Lexemes*/
 bool {return BOOL;}
 char {return CHAR;}
 int {return INT;}
@@ -47,24 +47,27 @@ Main {return MAIN;}
 "^" {return DEREFRENCE;}
 
   /*Other Lexemes*/
-"|" {return LENGTH;}
-";" {return SEMICOLON;}
-":" {return COLON;}
-"," {return COMMA;}
-"{" {return OPENBRACE;}
-"}" {return CLOSEBRACE;}
-"(" {return OPENPAREN;}
-")" {return CLOSEPAREN;}
-"[" {return OPENBRACKET;}
-"]" {return CLOSEBRACKET;}
+
+
+"|" {return '|';}
+";" {return ';';}
+":" {return ':';}
+"," {return ',';}
+"{" {return '{';}
+"}" {return '}';}
+"(" {return '(';}
+")" {return ')';}
+"[" {return '[';}
+"]" {return ']';}
  
- "/""%".*"%""/" {return COMMENT;}
+ 
+ "//s""%".*"%""/" {return COMMENT;}
 
   /*Literl*/
 return {return RETURN;}
 true {return BOOLTRUE;}
 false {return BOOLFALSE;}
-[a-zA-Z][a-zA-Z0-9_]* { yylval.string= strdup(yytext); return IDENTIFIER; }
+[a-zA-Z][a-zA-Z0-9]* { yylval.string= strdup(yytext); return IDENTIFIER; }
 "\""[^"]*"\"" {yylval.string= strdup(yytext); return STRING_LTL; }
 \'.\' {yylval.string= strdup(yytext); return CHAR_LTL; }
 [+-]?[1-9][0-9]*|[0-9] {yylval.string= strdup(yytext); return DECIMAL_LTL; }

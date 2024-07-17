@@ -35,8 +35,8 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_YY_PARSER_TAB_H_INCLUDED
-# define YY_YY_PARSER_TAB_H_INCLUDED
+#ifndef YY_YY_Y_TAB_H_INCLUDED
+# define YY_YY_Y_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -90,26 +90,68 @@ extern int yydebug;
     NULLL = 291,                   /* NULLL  */
     MAIN = 292,                    /* MAIN  */
     IDENTIFIER = 293,              /* IDENTIFIER  */
-    SEMICOLON = 294,               /* SEMICOLON  */
-    COMMA = 295,                   /* COMMA  */
-    OPENPAREN = 296,               /* OPENPAREN  */
-    CLOSEPAREN = 297,              /* CLOSEPAREN  */
-    OPENBRACKET = 298,             /* OPENBRACKET  */
-    CLOSEBRACKET = 299,            /* CLOSEBRACKET  */
-    OPENBRACE = 300,               /* OPENBRACE  */
-    CLOSEBRACE = 301,              /* CLOSEBRACE  */
-    DECIMAL_LTL = 302,             /* DECIMAL_LTL  */
-    HEX_LTL = 303,                 /* HEX_LTL  */
-    BOOLTRUE = 304,                /* BOOLTRUE  */
-    BOOLFALSE = 305,               /* BOOLFALSE  */
-    REAL = 306,                    /* REAL  */
-    REALPTR = 307,                 /* REALPTR  */
-    FUNCTION = 308,                /* FUNCTION  */
-    COLON = 309,                   /* COLON  */
-    DEREFRENCE = 310               /* DEREFRENCE  */
+    DECIMAL_LTL = 294,             /* DECIMAL_LTL  */
+    HEX_LTL = 295,                 /* HEX_LTL  */
+    BOOLTRUE = 296,                /* BOOLTRUE  */
+    BOOLFALSE = 297,               /* BOOLFALSE  */
+    REAL = 298,                    /* REAL  */
+    REALPTR = 299,                 /* REALPTR  */
+    FUNCTION = 300,                /* FUNCTION  */
+    COLON = 301,                   /* COLON  */
+    DEREFRENCE = 302               /* DEREFRENCE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
+/* Token kinds.  */
+#define YYEMPTY -2
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
+#define COMMENT 258
+#define WHILE 259
+#define IF 260
+#define ELSE 261
+#define FOR 262
+#define RETURN 263
+#define BOOL 264
+#define STRING 265
+#define CHARPTR 266
+#define CHAR 267
+#define INT 268
+#define INTPTR 269
+#define PROCEDUR 270
+#define AND 271
+#define ADDRESS 272
+#define EQL 273
+#define ASSINGMENT 274
+#define OR 275
+#define LENGTH 276
+#define GREATEREQL 277
+#define GREATER 278
+#define LESSEQL 279
+#define LESS 280
+#define NOTEQL 281
+#define NOT 282
+#define DIVISION 283
+#define PLUS 284
+#define MINUS 285
+#define MULTI 286
+#define VARIABLE 287
+#define STRING_LTL 288
+#define REAL_LTL 289
+#define CHAR_LTL 290
+#define NULLL 291
+#define MAIN 292
+#define IDENTIFIER 293
+#define DECIMAL_LTL 294
+#define HEX_LTL 295
+#define BOOLTRUE 296
+#define BOOLFALSE 297
+#define REAL 298
+#define REALPTR 299
+#define FUNCTION 300
+#define COLON 301
+#define DEREFRENCE 302
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -120,7 +162,7 @@ union YYSTYPE
     struct node *node;
     char *string;
 
-#line 124 "parser.tab.h"
+#line 166 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -135,4 +177,4 @@ extern YYSTYPE yylval;
 int yyparse (void);
 
 
-#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
+#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
