@@ -1,70 +1,166 @@
 # Lex_folder
 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11
-
 %{
-#include "y.tab.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+void yyerror(const char *s);
+int yylex();
 %}
 
-%%
+%union {
+    int ival;
+    float fval;
+    double dval;
+    char cval;
+    char *sval;
+}
 
-bool            { return BOOL; }
-char            { return CHAR; }
-int             { return INT; }
-double          { return DOUBLE; }
-float           { return FLOAT; }
-string          { return STRING; }
-int\*           { return INT_PTR; }
-char\*          { return CHAR_PTR; }
-double\*        { return DOUBLE_PTR; }
-float\*         { return FLOAT_PTR; }
-if              { return IF; }
-else            { return ELSE; }
-while           { return WHILE; }
-for             { return FOR; }
-var             { return VAR; }
-args>>          { return ARGS; }
-public          { return PUBLIC; }
-private         { return PRIVATE; }
-static          { return STATIC; }
-return          { return RETURN; }
-null            { return NULLPTR; }
-void            { return VOID; }
-do              { return DO; }
+%token <ival> BOOL CHAR INT DOUBLE FLOAT STRING INT_PTR CHAR_PTR DOUBLE_PTR FLOAT_PTR
+%token <ival> IF ELSE WHILE FOR VAR ARGS PUBLIC PRIVATE STATIC RETURN NULLPTR VOID DO
+%token <ival> TRUE FALSE
+%token <sval> IDENTIFIER
+%token <ival> INTEGER
+%token <dval> DOUBLE_LITERAL
+%token <fval> FLOAT_LITERAL
+%token <sval> STRING_LITERAL
+%token <cval> CHAR_LITERAL
 
-"true"          { return TRUE; }
-"false"         { return FALSE; }
-
-[a-zA-Z_][a-zA-Z0-9_]*  { yylval.sval = strdup(yytext); return IDENTIFIER; }
-
-[0-9]+                { yylval.ival = atoi(yytext); return INTEGER; }
-0x[0-9a-fA-F]+        { yylval.ival = strtol(yytext, NULL, 16); return INTEGER; }
-
-[0-9]+\.[0-9]+([eE][-+]?[0-9]+)? { yylval.dval = atof(yytext); return DOUBLE_LITERAL; }
-[0-9]+\.[0-9]*[fF]               { yylval.fval = atof(yytext); return FLOAT_LITERAL; }
-\"[^"]*\"               { yylval.sval = strdup(yytext); return STRING_LITERAL; }
-\'[^\']\'               { yylval.cval = yytext[1]; return CHAR_LITERAL; }
-
-&&              { return AND; }
-\|\|            { return OR; }
-<-              { return ASSIGN; }
-==              { return EQ; }
->               { return GT; }
->=              { return GE; }
-<               { return LT; }
-<=              { return LE; }
--               { return MINUS; }
-!               { return NOT; }
-!=              { return NEQ; }
-\+              { return PLUS; }
-\*              { return MUL; }
-&               { return ADDRESS; }
-
-[ \t\n]         { /* skip whitespace */ }
-
-.               { return yytext[0]; }
+%token AND OR ASSIGN EQ GT GE LT LE MINUS NOT NEQ PLUS MUL ADDRESS
 
 %%
 
-int yywrap() {
-    return 1;
+program:
+    function_list
+    ;
+
+function_list:
+    function
+    | function_list function
+    ;
+
+function:
+    PUBLIC type IDENTIFIER '(' parameter_list ')' STATIC '{' body '}'
+    | PRIVATE type IDENTIFIER '(' parameter_list ')' STATIC '{' body '}'
+    | PUBLIC type IDENTIFIER '(' parameter_list ')' '{' body '}'
+    | PRIVATE type IDENTIFIER '(' parameter_list ')' '{' body '}'
+    ;
+
+type:
+    BOOL
+    | CHAR
+    | INT
+    | DOUBLE
+    | FLOAT
+    | STRING
+    | VOID
+    | INT_PTR
+    | CHAR_PTR
+    | DOUBLE_PTR
+    | FLOAT_PTR
+    ;
+
+parameter_list:
+    /* empty */
+    | parameter_list ARGS parameter_type_list
+    ;
+
+parameter_type_list:
+    parameter_type
+    | parameter_type_list ',' parameter_type
+    ;
+
+parameter_type:
+    type IDENTIFIER
+    ;
+
+body:
+    declaration_list statement_list
+    ;
+
+declaration_list:
+    /* empty */
+    | declaration_list declaration
+    ;
+
+declaration:
+    VAR type IDENTIFIER ';'
+    | VAR type IDENTIFIER ASSIGN expression ';'
+    ;
+
+statement_list:
+    /* empty */
+    | statement_list statement
+    ;
+
+statement:
+    assignment_statement
+    | if_statement
+    | while_statement
+    | for_statement
+    | do_while_statement
+    | code_block
+    | return_statement
+    ;
+
+assignment_statement:
+    IDENTIFIER ASSIGN expression ';'
+    ;
+
+if_statement:
+    IF '(' expression ')' code_block
+    | IF '(' expression ')' code_block ELSE code_block
+    ;
+
+while_statement:
+    WHILE '(' expression ')' code_block
+    ;
+
+for_statement:
+    FOR '(' assignment_statement expression ';' assignment_statement ')' code_block
+    ;
+
+do_while_statement:
+    DO code_block WHILE '(' expression ')' ';'
+    ;
+
+code_block:
+    '{' declaration_list statement_list '}'
+    ;
+
+return_statement:
+    RETURN expression ';'
+    ;
+
+expression:
+    INTEGER
+    | DOUBLE_LITERAL
+    | FLOAT_LITERAL
+    | STRING_LITERAL
+    | CHAR_LITERAL
+    | IDENTIFIER
+    | expression PLUS expression
+    | expression MINUS expression
+    | expression MUL expression
+    | expression DIV expression
+    | expression EQ expression
+    | expression NEQ expression
+    | expression GT expression
+    | expression GE expression
+    | expression LT expression
+    | expression LE expression
+    | expression AND expression
+    | expression OR expression
+    | NOT expression
+    | '(' expression ')'
+    ;
+
+%%
+
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
+}
+
+int main() {
+    return yyparse();
 }
