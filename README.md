@@ -2,24 +2,25 @@
 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11
 
 
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int main(int argc, char **argv)
+typedef struct node
 {
-    if (argc < 2) {
-        fprintf(stderr, "Usage: %s <input file>\n", argv[0]);
-        return 1;
-    }
+    char *token;
+    struct node *left;
+    struct node *right;
+} node;
+node* mknode(char* token, node *left, node *right);
+void Printtree(node *tree);
+void printTabs(int n);
+int yylex();
+int yyerror(char *e);
 
-    FILE *file = freopen(argv[1], "r", stdin);
-    if (!file) {
-        perror("Could not open file");
-        return 1;
-    }
+extern int yylineno; // הוספת ההצהרה של yylineno
+extern char *yytext; // הוספת ההצהרה של yytext
 
-    printf("Starting parsing...\n");
-    int result = yyparse();
-    printf("Finished parsing.\n");
-
-    fclose(file);
-    return result;
-}
+int printlevel=0;
+%}
