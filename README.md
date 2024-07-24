@@ -1,5 +1,8 @@
 # Lex_folder
 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11
+
+https://us05web.zoom.us/j/85072119504?pwd=Kw5PLbKsT7l7fGvaI4GrOCLEsUPETk.1
+
 %{
 #include <stdio.h>
 #include <stdlib.h>
