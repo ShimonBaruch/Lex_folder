@@ -1,21 +1,22 @@
 %{
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 	
-	typedef struct node
-	{
-		char *token;
-		struct node *left;
-		struct node *right;
-	} node;
-	node* mknode(char* token, node *left, node *right);
-	void Printtree(node *tree);
-	void printTabs(int n);
-	int yylex();
-	int yyerror(char *e);
-	
-	int printlevel=0;
+typedef struct node
+{
+	char *token;
+	struct node *left;
+	struct node *right;
+} node;
+node* mknode(char* token, node *left, node *right);
+void Printtree(node *tree);
+void printTabs(int n);
+int yylex();
+extern int yylineno;
+extern char* yytext;
+void yyerror(char *e);
+int printlevel=0;
 %}
 %union
 {
@@ -23,15 +24,15 @@
     char *string;
 }
 
-
-%token <string> COMMENT WHILE IF ELSE FOR 
-%token <string> RETURN
-%token <string> BOOL STRING CHARPTR CHAR INT INTPTR PROCEDUR
-%token <string> AND ADDRESS EQL ASSINGMENT OR LENGTH GREATEREQL GREATER LESSEQL LESS NOTEQL NOT
+%token <string> COMMENT WHILE DO IF ELSE FOR 
+%token <string> RETURN ARGS
+%token <string> BOOL STRING CHARPTR CHAR INT DOUBLE FLOAT FLOATPTR DOUBPTR INTPTR PROCEDUR
+%token <string> AND ADDRESS EQL ASSINGMENT ASS OR LENGTH GREATEREQL GREATER LESSEQL LESS NOTEQL NOT
 %token <string> DIVISION PLUS MINUS MULTI VARIABLE
 %token <string> STRING_LTL REAL_LTL CHAR_LTL NULLL
 %token <string> MAIN IDENTIFIER ';' ',' '(' ')' '[' ']' '{' '}'
-%token <string> DECIMAL_LTL HEX_LTL BOOLTRUE BOOLFALSE  REAL REALPTR FUNCTION COLON  DEREFRENCE 
+%token <string> VOID PUBLIC PRIVATE STATIC 
+%token <string> INT_LTL DECIMAL_LTL HEX_LTL BOOLTRUE BOOLFALSE  REAL FLOATPTR FUNCTION COLON  DEREFRENCE 
 
 %left PLUS MINUS RETURN
 %left MULTI DIVISION
@@ -40,169 +41,157 @@
 %right NOT '}'
 
 %nonassoc IDENTIFIER 
+%nonassoc '('
 %nonassoc IF
-%nonassoc ELSE 
+%nonassoc ELSE
 
-
-%type <node> address_expr address_exprs stmnts stmnt_block derefrence_expr  expr_list call_func 
-%type <node> expr lhs assmnt_stmnt new_block 
-%type <node> stmnt type_pro type_id var_id declear paren_expr
-%type <node> pro_body para_list para_pro procedure procedures
-%type <node> main program project declears RET
+%type <node> address_expr address_exprs statements statement_block derefrence_expr expression_list function_call 
+%type <node> expr lhs assignment_statement code_block 
+%type <node> statement type var_id declare paren_expression
+%type <node> function_body parameter_list parameter_type function multi_function
+%type <node> main program project declarations return_value
+%type <node> cmmnt function_access_level parameter_list arguments string_exp2 string_exp multi_string_exp static_function
 %%
- //Main project
 project: cmmnt program { Printtree($2); printf("syntax valid\n");};
 
-program: procedures main {$$=mknode("CODE",$1,$2);}
+program: multi_function main {$$=mknode("CODE",$1,$2);};
 
- //comments
-cmmnt: COMMENT cmmnt| ;
-
- //this is the main
-main: PROCEDUR MAIN '(' ')' '{' pro_body '}'
-{
-$$=mknode("proc", mknode("Main",mknode("\n",NULL,NULL),NULL), mknode("ARGS",NULL,$6));}	
+main: PUBLIC type MAIN '(' ')' ':' STATIC '{' function_body '}' {$$=mknode("public", mknode("Main",mknode("\n",$7,NULL),NULL), mknode("body",NULL,$9));}	
 | {$$=NULL;};
 
-//functions
-procedures: procedures  procedure {$$=mknode("",$1,$2);}
-	| {$$=NULL;};
+function: function_access_level type IDENTIFIER '(' parameter_list ')' static_function '{' function_body '}'
+{$$ = mknode("func", mknode($3, $1, mknode("ARGS", $5, mknode("return", $8, NULL))), mknode("", $10, NULL));}
+| function_access_level type IDENTIFIER '(' parameter_list ')' ':' static_function '{' function_body '}'
+{$$ = mknode("func", mknode($3, $1, mknode("ARGS", $5, mknode("return", $8, NULL))), mknode("body", NULL, $11));};
 
-//function
-procedure: FUNCTION IDENTIFIER '(' para_pro ')' cmmnt RETURN type_pro  '{'  pro_body RET '}'
-{ 
-$$=mknode("func",mknode($2,mknode("\n",NULL,NULL),mknode("ARGS",$4,mknode("return",$8,NULL))),mknode("",$10,$11));	
-}
-| PROCEDUR IDENTIFIER '(' para_pro ')'  '{'  pro_body '}'
-{
-	$$=mknode("proc",mknode($2,mknode("\n",NULL,NULL),NULL),mknode("ARGS",$4,$7));
-};
+function_access_level: PRIVATE { $$ = mknode("private", NULL, NULL); }
+| PUBLIC { $$ = mknode("public", NULL, NULL); };
 
-
-//list of parameter for function or not
-para_pro: para_list {$$=$1;}
-| {$$=NULL;};
-
-//list of parameter
-
-para_list: var_id COLON type_id {$$=mknode("(",$3,mknode("",$1,mknode(")",NULL,NULL)));}
-	|  para_list ';' cmmnt  para_list 
-	{$$=mknode("",$1,mknode("",$4,NULL));}	;
-
- //Procedure body
-pro_body: cmmnt  procedures declears stmnts 
-{
-	$$=mknode("(BODY\n    ", mknode("",$2,NULL),mknode("",$3,mknode("",$4,mknode("}",NULL,NULL))));
-};
-
-
-//list of declears
-declears: declears declear  {$$=mknode("",$1,$2);} | {$$=NULL;}  ;
-
-//declaration of varibals/ 
-declear: VARIABLE var_id ':' type_id cmmnt ';' cmmnt
-{
-	$$=mknode("var", $4,$2);
-};
-
-//list of id like a,b,c/
-var_id: IDENTIFIER ',' var_id {$$=mknode($1, mknode(" ", $3, NULL),NULL);}
-	| IDENTIFIER {$$=mknode($1, NULL, NULL);} ;
-
-
-//types without string/
-type_id: BOOL {$$=mknode("boolean", NULL, NULL);}
-	| STRING '[' DECIMAL_LTL ']' {$$=mknode("string", NULL, NULL);}
-	| CHAR {$$=mknode("char", NULL, NULL);}
-	| INT {$$=mknode("int", NULL, NULL);}
-	| REAL {$$=mknode("real", NULL, NULL);}
-	| INTPTR {$$=mknode("int*", NULL, NULL);}
-	| CHARPTR {$$=mknode("char*", NULL, NULL);}
-	| REALPTR {$$=mknode("real*", NULL, NULL);};
-
-
-
-//type for returning from a function
-type_pro: BOOL {$$=mknode("boolean", NULL, NULL);}
+/*type for returning from a function*/
+type: BOOL {$$=mknode("boolean", NULL, NULL);}
  	| STRING {$$=mknode("string", NULL, NULL);}
 	| CHAR {$$=mknode("char", NULL, NULL);}
 	| INT {$$=mknode("int", NULL, NULL);}
-	| REAL {$$=mknode("real", NULL, NULL);}
+	| DOUBLE {$$=mknode("double", NULL, NULL);}
+	| FLOAT { $$ = mknode("int", NULL, NULL); }
 	| INTPTR {$$=mknode("int*", NULL, NULL);}
 	| CHARPTR {$$=mknode("char*", NULL, NULL);}
-	| REALPTR {$$=mknode("real*", NULL, NULL);};
-	
+	| FLOATPTR {$$=mknode("float*", NULL, NULL);};
+	| DOUBPTR { $$ = mknode("double*", NULL, NULL); }
+	| VOID { $$ = mknode("void*", NULL, NULL); };
 
-//Statments
-stmnts: stmnts stmnt {$$=mknode("",$1,$2);} | {$$=NULL;};
+parameter_list: ARGS parameter_type  { $$ = mknode("ARGS", $2, NULL); }
+| { $$ = NULL; };
 
-//stmnt_block
-stmnt_block: stmnt {$$=$1;}|RETURN expr ';' {$$=mknode("return",$2,NULL);};
+//list of parameter for function or not
+parameter_type: type ':' arguments parameter_list  {$$ = mknode("params", $1, $4); }
+| {$$=NULL;};
 
-//new block in stmnts
-new_block: '{' cmmnt declears stmnts RET '}' cmmnt
-{
-	$$=mknode("{",$3,mknode("", $4, mknode("",$5,mknode("}",NULL,NULL))));
-};
+//list of parameter
+parameter_list: parameter_list type ':' arguments { $$ = mknode("params", $1, $4); }
+| { $$ = NULL; }
+| IDENTIFIER { $$ = NULL; };
 
+arguments: IDENTIFIER ',' arguments { $$ = mknode("arguments", mknode($1, NULL, NULL), $3); }
+| IDENTIFIER ';' { $$ = mknode("arguments", mknode($1, NULL, NULL), NULL); }
+| { $$ = NULL; }
+| IDENTIFIER { $$ = NULL; };
 
-RET: RETURN expr ';' cmmnt {$$=mknode("return",$2,NULL);}| {$$=NULL;};
+static_function: STATIC { $$ = mknode("Static", NULL, NULL); }
+    | { $$ = mknode("Nonstatic", NULL, NULL); };
 
-//Statment
-stmnt: IF '(' expr ')'  stmnt_block 
-{
-	$$=mknode("if",
-	mknode("(", $3, 
-	mknode(")",NULL,NULL)),$5);
-}%prec IF
-| IF '(' expr ')'   stmnt_block    ELSE  stmnt_block  
-{
-	$$=mknode("if-else",
-	mknode("(", $3, 
-	mknode(")",NULL,NULL)),
-	mknode("",$5,
-	mknode("",$7,NULL)));
-}
-| WHILE cmmnt '(' expr ')'  stmnt_block  
-{
-	$$=mknode("while",
-	mknode("(", $4, 
-	mknode(")",NULL,NULL)),$6);
-}
-| FOR cmmnt '(' assmnt_stmnt ';' expr ';' assmnt_stmnt ')' stmnt_block 
-{
-		$$= mknode("for",
-			mknode("(",
-			mknode("",$4,$6),
-			mknode("",$8,
-			mknode(")",NULL,NULL))),$10);		
-}
-| assmnt_stmnt ';' cmmnt {$$=mknode("",$1,NULL);}
+function_body: cmmnt declarations multi_function statements return_value
+{ $$=mknode("(BODY\n", mknode("",$2,NULL),mknode("",$3,mknode("",$4, mknode("}",NULL,NULL))));};
+
+cmmnt: COMMENT cmmnt {$$ = mknode("COMMENT", mknode($1, NULL, NULL), $2);}
+| { $$ = NULL; };
+
+declarations: declarations declare  {$$=mknode("",$1,$2);} | {$$=NULL;}  ;
+
+//declaration of varibals/ 
+declare: VARIABLE type ':' var_id ';' {$$ = mknode("var", $2, mknode("",$4, NULL));}
+| STRING string_exp2 { $$ = mknode($1, $2, NULL); };
+
+var_id: IDENTIFIER ',' var_id {$$=mknode($1, mknode(" ", $3, NULL),NULL);}
+| IDENTIFIER ASSINGMENT expr ',' var_id {$$=mknode($1, $3, NULL);}
+| IDENTIFIER ASS expr ',' var_id  {$$ = mknode($1, $3, NULL); }
+| IDENTIFIER ASS expr {$$ = mknode("", mknode($1, NULL, NULL), NULL); }
+| IDENTIFIER ASSINGMENT expr {$$ = mknode($1, $3, NULL);}
+| IDENTIFIER {$$ = NULL; };
+
+string_exp2: multi_string_exp IDENTIFIER '[' INT_LTL ']' ASS STRING ';' { $$ = mknode("", $1, mknode($2, mknode("[", mknode($4, NULL, NULL), mknode("]", NULL, NULL)), mknode($7, NULL, NULL))); }
+| multi_string_exp IDENTIFIER '[' INT_LTL ']' ';' { $$ = mknode("", $1, mknode($2, mknode("[", mknode($4, NULL, NULL), mknode("]", NULL, NULL)),mknode("]", NULL, NULL))); };
+
+multi_string_exp: multi_string_exp string_exp { $$ = mknode("", $1, $2); }
+    | { $$ = NULL; };
+    
+string_exp: IDENTIFIER '[' expr ']' ASS expr ',' { $$ = mknode($1, mknode($2, $3, mknode($4, NULL, NULL)), mknode($5, $6, NULL)); }
+| IDENTIFIER '[' expr ']' ',' { $$ = mknode($1, mknode("[", $3, mknode("]", NULL, NULL)), NULL); };
+
+multi_function: function multi_function {$$=mknode("",$1,$2);}
+| {$$=NULL;};
+
+statements: statements statement {$$=mknode("",$1,$2);} | {$$=NULL;};
+
+statement: '(' function_body ')' { $$ = mknode("", $2, NULL); }
+| IF '(' expr ')' '{' function_body '}' { $$ = mknode("IF", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $6, NULL)); }
+| IF '(' expr ')' statement_block ';' ELSE statement_block ';' { $$ = mknode("IF-ELSE", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $5, $8)); }
+| IF '(' expr ')' statement_block ';' ELSE '{' function_body '}' { $$ = mknode("IF-ELSE", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $5, mknode("BLOCK", $9, NULL))); }
+| IF '(' expr ')' '{' function_body '}' ELSE '{' function_body '}' { $$ = mknode("IF-ELSE", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $6, mknode("BLOCK", $10, NULL))); }
+| IF '(' expr ')' statement_block { $$=mknode("IF", mknode("(", $3, mknode(")",NULL,NULL)),$5);}
+| IF '(' expr ')' '{' function_body '}' ELSE statement_block ';' { $$=mknode("IF_ELSE", mknode("(", $3, mknode(")",NULL,NULL)), mknode("",$5, mknode("", $7,NULL)));}
+| WHILE cmmnt '(' expr ')' statement_block ';' { $$=mknode("WHILE", mknode("(", $4, mknode(")",NULL,NULL)),$6);}
+| WHILE '(' expr ')' '{' function_body '}' { $$ = mknode("WHILE", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $6, NULL)); }
+| DO '{' function_body '}' WHILE '(' expr ')' ';' { $$ = mknode("DO", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $5, NULL)); }
+| FOR cmmnt '(' assignment_statement ';' expr ';' assignment_statement ')' statement_block { $$= mknode("for", mknode("(", mknode("",$4,$6), mknode("",$8, mknode(")",NULL,NULL))),$10);}
+| FOR cmmnt '(' assignment_statement ';' expr ';' assignment_statement ')' '{' function_body '}' { $$= mknode("for", mknode("(", mknode("",$4,$6), mknode("",$8, mknode(")",NULL,NULL))),$11);}
 | expr ';' cmmnt {$$=$1;}
-| new_block {$$=$1;};
+| code_block {$$=$1;}
+| assignment_statement {$$ = mknode("ASSIGN", $1, NULL);}
+| assignment_statement ';' cmmnt {$$=mknode("",$1,NULL);};
 
+assignment_statement2: IDENTIFIER ASS expr ';' {$$ = mknode($1, $3, NULL);}
+| IDENTIFIER ASSINGMENT expr ';' {$$ = mknode($1, $3, NULL);}
+| IDENTIFIER ASS ADDRESS IDENTIFIER ';' {$$ = mknode("ADDRESSTO", mknode($3, NULL, NULL), mknode($4, NULL, NULL));}
+| ADDRESS IDENTIFIER ASS IDENTIFIER ';' {$$ = mknode("ADDRESSFROM", mknode($2, NULL, NULL), mknode($4, NULL, NULL));}
+| IDENTIFIER ASS IDENTIFIER MULTI ';'  {$$ = mknode("CONTENT", mknode($1, NULL, NULL), mknode($3, NULL, NULL));}
+| MULTI IDENTIFIER ASS IDENTIFIER ';' {$$ = mknode("ADDCONTENTVAR", mknode($2, NULL, NULL), mknode($4, NULL, NULL));}
+| MULTI IDENTIFIER ASS INT_LTL ';' { $$ = mknode("ADDCONTENTNUM", mknode($2, NULL, NULL), mknode($4, NULL, NULL)); }
+| IDENTIFIER '(' INT_LTL ')' ASS CHAR_LTL ';' { $$ = mknode("ARRCHAR", mknode($1, NULL, NULL), mknode("INDEX-CHAR", mknode($3, NULL, NULL), mknode($6, NULL, NULL))); }
+| IDENTIFIER ASS IDENTIFIER MULTI ';' { $$ = mknode("DOUBLECONTENT", mknode($1, NULL, NULL), mknode($3, NULL, NULL)); }
+| IDENTIFIER ASS function_call ';' {$$ = mknode("function", mknode($1, NULL, NULL), $3);};
+/**/
+assignment_statement: lhs ASS expr ';' {$$ = mknode("<-", $1, $3);}
+| lhs ASS STRING_LTL ';' {$$ = mknode("<-", $1, $3);};
 
-//assiment statment
-assmnt_stmnt: lhs ASSINGMENT expr 
-{
-	$$=mknode("=",$1,$3);
-};
+code_block: '{' cmmnt declarations statements return_value '}' cmmnt {$$=mknode("{",$3,mknode("", $4, mknode("",$5,mknode("}",NULL,NULL))));}
+| { $$ = NULL; };
 
+return_value: RETURN expr ';' cmmnt {$$=mknode("return",$2,NULL);}
+| {$$=NULL;};
 
-//lefd hand side id
-lhs: IDENTIFIER '[' expr ']' 
-{
-	$$=mknode($1, mknode("[",$3,mknode("]",NULL,NULL)), NULL);
-} 
+lhs: IDENTIFIER '[' expr ']' { $$=mknode($1, mknode("[",$3,mknode("]",NULL,NULL)), NULL);} 
 | IDENTIFIER {$$=mknode($1,NULL,NULL);}
-| derefrence_expr{$$=$1;} ;
+| derefrence_expr {$$=$1;} ;
+/**/
+derefrence_expr: DEREFRENCE IDENTIFIER {$$=mknode("^",mknode($2,NULL,NULL),NULL);}
+| DEREFRENCE '(' expr ')' {$$=mknode("^",mknode("(",$3,NULL),mknode(")",NULL,NULL));}
+| DEREFRENCE IDENTIFIER '[' expr ']' {$$=mknode($1, mknode($2,NULL,NULL), mknode("[",$4,mknode("]",NULL,NULL)));};
 
+function_call: IDENTIFIER paren_expression ';' {$$=mknode("function call",mknode($1,NULL,NULL),mknode("ARGS",$2,NULL));} 
+/*| lhs ASS IDENTIFIER '(' expression_list ')' ';' {$$=mknode("function call",mknode($1,NULL,NULL),mknode("ARGS",$2,NULL));}*/;
 
-	
-//Expresion
-expr:  '(' expr ')' {$$=mknode("(",$2,mknode(")",NULL,NULL));}|
-//bool oper
-    expr EQL expr {$$=mknode("==",$1,$3);}
+paren_expression:'(' expression_list ')' {$$=$2;};
+
+expression_list: expr ',' expression_list {$$=mknode("",$1,mknode(",",$3,NULL));} 
+| expr {$$=mknode("",$1,NULL);}
+| {$$=NULL;};
+
+statement_block: statement {$$=$1;}
+| RETURN expr ';' {$$=mknode("return",$2,NULL);};
+
+expr:  '(' expr ')' {$$=mknode("(",$2,mknode(")",NULL,NULL));}
+	| expr EQL expr {$$=mknode("==",$1,$3);}
 	| expr NOTEQL expr {$$=mknode("!=",$1,$3);}
 	| expr GREATEREQL expr {$$=mknode(">=",$1,$3);}
 	| expr GREATER expr {$$=mknode(">",$1,$3);}
@@ -210,69 +199,35 @@ expr:  '(' expr ')' {$$=mknode("(",$2,mknode(")",NULL,NULL));}|
 	| expr LESS expr {$$=mknode("<",$1,$3);}
 	| expr AND expr {$$=mknode("&&",$1,$3);}
 	| expr OR expr {$$=mknode("||",$1,$3);}
-//aritmetical operator
 	| expr PLUS expr {$$=mknode("+",$1,$3);}
 	| expr MINUS expr {$$=mknode("-",$1,$3);}
 	| expr MULTI expr {$$=mknode("*",$1,$3);}
 	| expr DIVISION expr {$$=mknode("/",$1,$3);}
-//not operator
 	| NOT expr {$$=mknode("!",$2,NULL);}
 	| address_exprs {$$=$1;}
 	| derefrence_expr {$$=$1;}
-	| call_func cmmnt {$$=$1;}
+	| function_call cmmnt {$$=$1;}
 	| DECIMAL_LTL {$$=mknode($1,NULL,NULL);}
 	| HEX_LTL {$$=mknode($1,NULL,NULL);}
 	| CHAR_LTL {$$=mknode($1,NULL,NULL);}
-	| REAL_LTL {$$=mknode($1,NULL,NULL);}
+	| INT_LTL {$$=mknode($1,NULL,NULL);}
+	| FLOAT_LTL {$$=mknode($1,NULL,NULL);}
 	| STRING_LTL {$$=mknode($1,NULL,NULL);}
 	| BOOLFALSE {$$=mknode($1,NULL,NULL);}
 	| BOOLTRUE {$$=mknode($1,NULL,NULL);}
-	| LENGTH IDENTIFIER LENGTH 
-	{
-		$$=mknode("|",
-		mknode($2,NULL,NULL),
-		mknode("|",NULL,NULL));
-	}
-	| IDENTIFIER '[' expr ']' 
-	{$$=mknode($1,mknode("[",$3,mknode("]",NULL,NULL)),NULL);}
+	| '|' '|' IDENTIFIER { $$=mknode("|", mknode("|",NULL,NULL), mknode($3,NULL,NULL));}
+	| IDENTIFIER '[' expr ']' {$$=mknode($1,mknode("[",$3,mknode("]",NULL,NULL)),NULL);}
 	| IDENTIFIER {$$=mknode($1,NULL,NULL);}
 	| NULLL {$$=mknode("null",NULL,NULL);};
-
-//address expression like &id
 
 address_exprs:ADDRESS address_exprs {$$=mknode($1,$2,NULL);} | address_expr {$$=$1;};
 
 address_expr: ADDRESS IDENTIFIER {$$=mknode("&",mknode($2,NULL,NULL),NULL);}
 	| ADDRESS '(' IDENTIFIER ')' {$$=mknode("&",mknode("(",mknode($3,NULL,NULL),NULL),mknode(")",NULL,NULL));}
-	| ADDRESS IDENTIFIER '[' expr ']' 
-	{$$=mknode("&", mknode($2,NULL,NULL), mknode("[",$4,mknode("]",NULL,NULL)));}
-	| ADDRESS '(' IDENTIFIER '[' expr ']' ')' 
-	{
-		$$=mknode("&",
-		mknode("(", 
-		mknode($3,NULL,NULL),
-		mknode("[",$5,NULL)), 
-		mknode("]",NULL,mknode(")",NULL,NULL)));
-	};
-//value expression like ^id
+	| ADDRESS IDENTIFIER '[' expr ']' {$$=mknode("&", mknode($2,NULL,NULL), mknode("[",$4,mknode("]",NULL,NULL)));}
+	| ADDRESS '(' IDENTIFIER '[' expr ']' ')' {$$=mknode("&",mknode("(", mknode($3,NULL,NULL),mknode("[",$5,NULL)), mknode("]",NULL,mknode(")",NULL,NULL)));};
 
-
-	derefrence_expr: DEREFRENCE IDENTIFIER {$$=mknode("^",mknode($2,NULL,NULL),NULL);}
-	| DEREFRENCE '(' expr ')' {$$=mknode("^",mknode("(",$3,NULL),mknode(")",NULL,NULL));}
-	| DEREFRENCE IDENTIFIER '[' expr ']' 
-	{$$=mknode($1, mknode($2,NULL,NULL), mknode("[",$4,mknode("]",NULL,NULL)));};
-
-	//list of expreession
-expr_list: expr ',' expr_list {$$=mknode("",$1,mknode(",",$3,NULL));} 
-	| expr {$$=mknode("",$1,NULL);}
-	| {$$=NULL;};
-
-paren_expr:'(' expr_list ')' {$$=$2;};
-//call func rul 
-call_func: IDENTIFIER paren_expr {$$=mknode("Call func",mknode($1,NULL,NULL),mknode("ARGS",$2,NULL));} ;
 %%
-
-
 
 int main()
 {
@@ -358,7 +313,7 @@ void Printtree(node* tree)
 	}
 			else if(strcmp(tree->token, "return") == 0)
 	{
-		printf("(RET ");
+		printf("(return_value ");
 		flag = 2;
 	}
 	else if(strcmp(tree->token, "{") == 0)
@@ -445,12 +400,11 @@ strcmp(tree->token, ",") == 0 )
 	if(flag == 0)
 		printf("\n)");
 }
-int yyerror(char *e)
-{
-	int yydebug=1; 
-	fflush(stdout);
-	fprintf(stderr,"Error %s at line %d\n" ,e);
 
-	
-	return 0;
+int yyerror(char *e) {
+    fflush(stdout);
+    fprintf(stderr, "Error %s at line %d\n", e, yylineno);
+    fprintf(stderr, "does not accept '%s'\n", yytext);
+    return 0;
 }
+

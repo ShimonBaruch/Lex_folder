@@ -56,49 +56,61 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     COMMENT = 258,                 /* COMMENT  */
     WHILE = 259,                   /* WHILE  */
-    IF = 260,                      /* IF  */
-    ELSE = 261,                    /* ELSE  */
-    FOR = 262,                     /* FOR  */
-    RETURN = 263,                  /* RETURN  */
-    BOOL = 264,                    /* BOOL  */
-    STRING = 265,                  /* STRING  */
-    CHARPTR = 266,                 /* CHARPTR  */
-    CHAR = 267,                    /* CHAR  */
-    INT = 268,                     /* INT  */
-    INTPTR = 269,                  /* INTPTR  */
-    PROCEDUR = 270,                /* PROCEDUR  */
-    AND = 271,                     /* AND  */
-    ADDRESS = 272,                 /* ADDRESS  */
-    EQL = 273,                     /* EQL  */
-    ASSINGMENT = 274,              /* ASSINGMENT  */
-    OR = 275,                      /* OR  */
-    LENGTH = 276,                  /* LENGTH  */
-    GREATEREQL = 277,              /* GREATEREQL  */
-    GREATER = 278,                 /* GREATER  */
-    LESSEQL = 279,                 /* LESSEQL  */
-    LESS = 280,                    /* LESS  */
-    NOTEQL = 281,                  /* NOTEQL  */
-    NOT = 282,                     /* NOT  */
-    DIVISION = 283,                /* DIVISION  */
-    PLUS = 284,                    /* PLUS  */
-    MINUS = 285,                   /* MINUS  */
-    MULTI = 286,                   /* MULTI  */
-    VARIABLE = 287,                /* VARIABLE  */
-    STRING_LTL = 288,              /* STRING_LTL  */
-    REAL_LTL = 289,                /* REAL_LTL  */
-    CHAR_LTL = 290,                /* CHAR_LTL  */
-    NULLL = 291,                   /* NULLL  */
-    MAIN = 292,                    /* MAIN  */
-    IDENTIFIER = 293,              /* IDENTIFIER  */
-    DECIMAL_LTL = 294,             /* DECIMAL_LTL  */
-    HEX_LTL = 295,                 /* HEX_LTL  */
-    BOOLTRUE = 296,                /* BOOLTRUE  */
-    BOOLFALSE = 297,               /* BOOLFALSE  */
-    REAL = 298,                    /* REAL  */
-    REALPTR = 299,                 /* REALPTR  */
-    FUNCTION = 300,                /* FUNCTION  */
-    COLON = 301,                   /* COLON  */
-    DEREFRENCE = 302               /* DEREFRENCE  */
+    DO = 260,                      /* DO  */
+    IF = 261,                      /* IF  */
+    ELSE = 262,                    /* ELSE  */
+    FOR = 263,                     /* FOR  */
+    RETURN = 264,                  /* RETURN  */
+    ARGS = 265,                    /* ARGS  */
+    BOOL = 266,                    /* BOOL  */
+    STRING = 267,                  /* STRING  */
+    CHARPTR = 268,                 /* CHARPTR  */
+    CHAR = 269,                    /* CHAR  */
+    INT = 270,                     /* INT  */
+    DOUBLE = 271,                  /* DOUBLE  */
+    FLOAT = 272,                   /* FLOAT  */
+    FLOATPTR = 273,                /* FLOATPTR  */
+    DOUBPTR = 274,                 /* DOUBPTR  */
+    INTPTR = 275,                  /* INTPTR  */
+    PROCEDUR = 276,                /* PROCEDUR  */
+    AND = 277,                     /* AND  */
+    ADDRESS = 278,                 /* ADDRESS  */
+    EQL = 279,                     /* EQL  */
+    ASSINGMENT = 280,              /* ASSINGMENT  */
+    ASS = 281,                     /* ASS  */
+    OR = 282,                      /* OR  */
+    LENGTH = 283,                  /* LENGTH  */
+    GREATEREQL = 284,              /* GREATEREQL  */
+    GREATER = 285,                 /* GREATER  */
+    LESSEQL = 286,                 /* LESSEQL  */
+    LESS = 287,                    /* LESS  */
+    NOTEQL = 288,                  /* NOTEQL  */
+    NOT = 289,                     /* NOT  */
+    DIVISION = 290,                /* DIVISION  */
+    PLUS = 291,                    /* PLUS  */
+    MINUS = 292,                   /* MINUS  */
+    MULTI = 293,                   /* MULTI  */
+    VARIABLE = 294,                /* VARIABLE  */
+    STRING_LTL = 295,              /* STRING_LTL  */
+    REAL_LTL = 296,                /* REAL_LTL  */
+    CHAR_LTL = 297,                /* CHAR_LTL  */
+    NULLL = 298,                   /* NULLL  */
+    MAIN = 299,                    /* MAIN  */
+    IDENTIFIER = 300,              /* IDENTIFIER  */
+    VOID = 301,                    /* VOID  */
+    PUBLIC = 302,                  /* PUBLIC  */
+    PRIVATE = 303,                 /* PRIVATE  */
+    STATIC = 304,                  /* STATIC  */
+    INT_LTL = 305,                 /* INT_LTL  */
+    DECIMAL_LTL = 306,             /* DECIMAL_LTL  */
+    HEX_LTL = 307,                 /* HEX_LTL  */
+    BOOLTRUE = 308,                /* BOOLTRUE  */
+    BOOLFALSE = 309,               /* BOOLFALSE  */
+    REAL = 310,                    /* REAL  */
+    REALPTR = 311,                 /* REALPTR  */
+    FUNCTION = 312,                /* FUNCTION  */
+    COLON = 313,                   /* COLON  */
+    DEREFRENCE = 314               /* DEREFRENCE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -109,60 +121,72 @@ extern int yydebug;
 #define YYUNDEF 257
 #define COMMENT 258
 #define WHILE 259
-#define IF 260
-#define ELSE 261
-#define FOR 262
-#define RETURN 263
-#define BOOL 264
-#define STRING 265
-#define CHARPTR 266
-#define CHAR 267
-#define INT 268
-#define INTPTR 269
-#define PROCEDUR 270
-#define AND 271
-#define ADDRESS 272
-#define EQL 273
-#define ASSINGMENT 274
-#define OR 275
-#define LENGTH 276
-#define GREATEREQL 277
-#define GREATER 278
-#define LESSEQL 279
-#define LESS 280
-#define NOTEQL 281
-#define NOT 282
-#define DIVISION 283
-#define PLUS 284
-#define MINUS 285
-#define MULTI 286
-#define VARIABLE 287
-#define STRING_LTL 288
-#define REAL_LTL 289
-#define CHAR_LTL 290
-#define NULLL 291
-#define MAIN 292
-#define IDENTIFIER 293
-#define DECIMAL_LTL 294
-#define HEX_LTL 295
-#define BOOLTRUE 296
-#define BOOLFALSE 297
-#define REAL 298
-#define REALPTR 299
-#define FUNCTION 300
-#define COLON 301
-#define DEREFRENCE 302
+#define DO 260
+#define IF 261
+#define ELSE 262
+#define FOR 263
+#define RETURN 264
+#define ARGS 265
+#define BOOL 266
+#define STRING 267
+#define CHARPTR 268
+#define CHAR 269
+#define INT 270
+#define DOUBLE 271
+#define FLOAT 272
+#define FLOATPTR 273
+#define DOUBPTR 274
+#define INTPTR 275
+#define PROCEDUR 276
+#define AND 277
+#define ADDRESS 278
+#define EQL 279
+#define ASSINGMENT 280
+#define ASS 281
+#define OR 282
+#define LENGTH 283
+#define GREATEREQL 284
+#define GREATER 285
+#define LESSEQL 286
+#define LESS 287
+#define NOTEQL 288
+#define NOT 289
+#define DIVISION 290
+#define PLUS 291
+#define MINUS 292
+#define MULTI 293
+#define VARIABLE 294
+#define STRING_LTL 295
+#define REAL_LTL 296
+#define CHAR_LTL 297
+#define NULLL 298
+#define MAIN 299
+#define IDENTIFIER 300
+#define VOID 301
+#define PUBLIC 302
+#define PRIVATE 303
+#define STATIC 304
+#define INT_LTL 305
+#define DECIMAL_LTL 306
+#define HEX_LTL 307
+#define BOOLTRUE 308
+#define BOOLFALSE 309
+#define REAL 310
+#define REALPTR 311
+#define FUNCTION 312
+#define COLON 313
+#define DEREFRENCE 314
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 21 "parser.y"
+#line 22 "parser.y"
 
     struct node *node;
     char *string;
 
-#line 166 "y.tab.h"
+#line 190 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
