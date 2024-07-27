@@ -69,45 +69,45 @@ extern int yydebug;
     INT = 270,                     /* INT  */
     DOUBLE = 271,                  /* DOUBLE  */
     FLOAT = 272,                   /* FLOAT  */
-    FLOATPTR = 273,                /* FLOATPTR  */
-    DOUBPTR = 274,                 /* DOUBPTR  */
-    INTPTR = 275,                  /* INTPTR  */
-    PROCEDUR = 276,                /* PROCEDUR  */
-    AND = 277,                     /* AND  */
-    ADDRESS = 278,                 /* ADDRESS  */
-    EQL = 279,                     /* EQL  */
-    ASSINGMENT = 280,              /* ASSINGMENT  */
-    ASS = 281,                     /* ASS  */
-    OR = 282,                      /* OR  */
-    LENGTH = 283,                  /* LENGTH  */
-    GREATEREQL = 284,              /* GREATEREQL  */
-    GREATER = 285,                 /* GREATER  */
-    LESSEQL = 286,                 /* LESSEQL  */
-    LESS = 287,                    /* LESS  */
-    NOTEQL = 288,                  /* NOTEQL  */
-    NOT = 289,                     /* NOT  */
-    DIVISION = 290,                /* DIVISION  */
-    PLUS = 291,                    /* PLUS  */
-    MINUS = 292,                   /* MINUS  */
-    MULTI = 293,                   /* MULTI  */
-    VARIABLE = 294,                /* VARIABLE  */
-    STRING_LTL = 295,              /* STRING_LTL  */
-    REAL_LTL = 296,                /* REAL_LTL  */
-    CHAR_LTL = 297,                /* CHAR_LTL  */
-    NULLL = 298,                   /* NULLL  */
-    MAIN = 299,                    /* MAIN  */
-    IDENTIFIER = 300,              /* IDENTIFIER  */
-    VOID = 301,                    /* VOID  */
-    PUBLIC = 302,                  /* PUBLIC  */
-    PRIVATE = 303,                 /* PRIVATE  */
-    STATIC = 304,                  /* STATIC  */
-    INT_LTL = 305,                 /* INT_LTL  */
-    DECIMAL_LTL = 306,             /* DECIMAL_LTL  */
-    HEX_LTL = 307,                 /* HEX_LTL  */
+    DOUBPTR = 273,                 /* DOUBPTR  */
+    INTPTR = 274,                  /* INTPTR  */
+    PROCEDUR = 275,                /* PROCEDUR  */
+    AND = 276,                     /* AND  */
+    ADDRESS = 277,                 /* ADDRESS  */
+    EQL = 278,                     /* EQL  */
+    ASSINGMENT = 279,              /* ASSINGMENT  */
+    ASS = 280,                     /* ASS  */
+    OR = 281,                      /* OR  */
+    LENGTH = 282,                  /* LENGTH  */
+    GREATEREQL = 283,              /* GREATEREQL  */
+    GREATER = 284,                 /* GREATER  */
+    LESSEQL = 285,                 /* LESSEQL  */
+    LESS = 286,                    /* LESS  */
+    NOTEQL = 287,                  /* NOTEQL  */
+    NOT = 288,                     /* NOT  */
+    DIVISION = 289,                /* DIVISION  */
+    PLUS = 290,                    /* PLUS  */
+    MINUS = 291,                   /* MINUS  */
+    MULTI = 292,                   /* MULTI  */
+    VARIABLE = 293,                /* VARIABLE  */
+    STRING_LTL = 294,              /* STRING_LTL  */
+    REAL_LTL = 295,                /* REAL_LTL  */
+    CHAR_LTL = 296,                /* CHAR_LTL  */
+    NULLL = 297,                   /* NULLL  */
+    MAIN = 298,                    /* MAIN  */
+    IDENTIFIER = 299,              /* IDENTIFIER  */
+    VOID = 300,                    /* VOID  */
+    PUBLIC = 301,                  /* PUBLIC  */
+    PRIVATE = 302,                 /* PRIVATE  */
+    STATIC = 303,                  /* STATIC  */
+    INT_LTL = 304,                 /* INT_LTL  */
+    DECIMAL_LTL = 305,             /* DECIMAL_LTL  */
+    HEX_LTL = 306,                 /* HEX_LTL  */
+    FLOAT_LTL = 307,               /* FLOAT_LTL  */
     BOOLTRUE = 308,                /* BOOLTRUE  */
     BOOLFALSE = 309,               /* BOOLFALSE  */
     REAL = 310,                    /* REAL  */
-    REALPTR = 311,                 /* REALPTR  */
+    FLOATPTR = 311,                /* FLOATPTR  */
     FUNCTION = 312,                /* FUNCTION  */
     COLON = 313,                   /* COLON  */
     DEREFRENCE = 314               /* DEREFRENCE  */
@@ -134,45 +134,45 @@ extern int yydebug;
 #define INT 270
 #define DOUBLE 271
 #define FLOAT 272
-#define FLOATPTR 273
-#define DOUBPTR 274
-#define INTPTR 275
-#define PROCEDUR 276
-#define AND 277
-#define ADDRESS 278
-#define EQL 279
-#define ASSINGMENT 280
-#define ASS 281
-#define OR 282
-#define LENGTH 283
-#define GREATEREQL 284
-#define GREATER 285
-#define LESSEQL 286
-#define LESS 287
-#define NOTEQL 288
-#define NOT 289
-#define DIVISION 290
-#define PLUS 291
-#define MINUS 292
-#define MULTI 293
-#define VARIABLE 294
-#define STRING_LTL 295
-#define REAL_LTL 296
-#define CHAR_LTL 297
-#define NULLL 298
-#define MAIN 299
-#define IDENTIFIER 300
-#define VOID 301
-#define PUBLIC 302
-#define PRIVATE 303
-#define STATIC 304
-#define INT_LTL 305
-#define DECIMAL_LTL 306
-#define HEX_LTL 307
+#define DOUBPTR 273
+#define INTPTR 274
+#define PROCEDUR 275
+#define AND 276
+#define ADDRESS 277
+#define EQL 278
+#define ASSINGMENT 279
+#define ASS 280
+#define OR 281
+#define LENGTH 282
+#define GREATEREQL 283
+#define GREATER 284
+#define LESSEQL 285
+#define LESS 286
+#define NOTEQL 287
+#define NOT 288
+#define DIVISION 289
+#define PLUS 290
+#define MINUS 291
+#define MULTI 292
+#define VARIABLE 293
+#define STRING_LTL 294
+#define REAL_LTL 295
+#define CHAR_LTL 296
+#define NULLL 297
+#define MAIN 298
+#define IDENTIFIER 299
+#define VOID 300
+#define PUBLIC 301
+#define PRIVATE 302
+#define STATIC 303
+#define INT_LTL 304
+#define DECIMAL_LTL 305
+#define HEX_LTL 306
+#define FLOAT_LTL 307
 #define BOOLTRUE 308
 #define BOOLFALSE 309
 #define REAL 310
-#define REALPTR 311
+#define FLOATPTR 311
 #define FUNCTION 312
 #define COLON 313
 #define DEREFRENCE 314

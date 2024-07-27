@@ -26,13 +26,13 @@ int printlevel=0;
 
 %token <string> COMMENT WHILE DO IF ELSE FOR 
 %token <string> RETURN ARGS
-%token <string> BOOL STRING CHARPTR CHAR INT DOUBLE FLOAT FLOATPTR DOUBPTR INTPTR PROCEDUR
+%token <string> BOOL STRING CHARPTR CHAR INT DOUBLE FLOAT DOUBPTR INTPTR PROCEDUR
 %token <string> AND ADDRESS EQL ASSINGMENT ASS OR LENGTH GREATEREQL GREATER LESSEQL LESS NOTEQL NOT
 %token <string> DIVISION PLUS MINUS MULTI VARIABLE
 %token <string> STRING_LTL REAL_LTL CHAR_LTL NULLL
 %token <string> MAIN IDENTIFIER ';' ',' '(' ')' '[' ']' '{' '}'
 %token <string> VOID PUBLIC PRIVATE STATIC 
-%token <string> INT_LTL DECIMAL_LTL HEX_LTL BOOLTRUE BOOLFALSE  REAL FLOATPTR FUNCTION COLON  DEREFRENCE 
+%token <string> INT_LTL DECIMAL_LTL HEX_LTL FLOAT_LTL BOOLTRUE BOOLFALSE REAL FLOATPTR FUNCTION COLON  DEREFRENCE 
 
 %left PLUS MINUS RETURN
 %left MULTI DIVISION
@@ -50,7 +50,7 @@ int printlevel=0;
 %type <node> statement type var_id declare paren_expression
 %type <node> function_body parameter_list parameter_type function multi_function
 %type <node> main program project declarations return_value
-%type <node> cmmnt function_access_level parameter_list arguments string_exp2 string_exp multi_string_exp static_function
+%type <node> cmmnt function_access_level params_list arguments string_exp2 string_exp multi_string_exp static_function
 %%
 project: cmmnt program { Printtree($2); printf("syntax valid\n");};
 
@@ -84,11 +84,11 @@ parameter_list: ARGS parameter_type  { $$ = mknode("ARGS", $2, NULL); }
 | { $$ = NULL; };
 
 //list of parameter for function or not
-parameter_type: type ':' arguments parameter_list  {$$ = mknode("params", $1, $4); }
+parameter_type: type ':' arguments params_list  {$$ = mknode("params", $1, $4); }
 | {$$=NULL;};
 
 //list of parameter
-parameter_list: parameter_list type ':' arguments { $$ = mknode("params", $1, $4); }
+params_list: params_list type ':' arguments { $$ = mknode("params", $1, $4); }
 | { $$ = NULL; }
 | IDENTIFIER { $$ = NULL; };
 
@@ -150,7 +150,7 @@ statement: '(' function_body ')' { $$ = mknode("", $2, NULL); }
 | assignment_statement {$$ = mknode("ASSIGN", $1, NULL);}
 | assignment_statement ';' cmmnt {$$=mknode("",$1,NULL);};
 
-assignment_statement2: IDENTIFIER ASS expr ';' {$$ = mknode($1, $3, NULL);}
+/*assignment_statement2: IDENTIFIER ASS expr ';' {$$ = mknode($1, $3, NULL);}
 | IDENTIFIER ASSINGMENT expr ';' {$$ = mknode($1, $3, NULL);}
 | IDENTIFIER ASS ADDRESS IDENTIFIER ';' {$$ = mknode("ADDRESSTO", mknode($3, NULL, NULL), mknode($4, NULL, NULL));}
 | ADDRESS IDENTIFIER ASS IDENTIFIER ';' {$$ = mknode("ADDRESSFROM", mknode($2, NULL, NULL), mknode($4, NULL, NULL));}
@@ -159,7 +159,7 @@ assignment_statement2: IDENTIFIER ASS expr ';' {$$ = mknode($1, $3, NULL);}
 | MULTI IDENTIFIER ASS INT_LTL ';' { $$ = mknode("ADDCONTENTNUM", mknode($2, NULL, NULL), mknode($4, NULL, NULL)); }
 | IDENTIFIER '(' INT_LTL ')' ASS CHAR_LTL ';' { $$ = mknode("ARRCHAR", mknode($1, NULL, NULL), mknode("INDEX-CHAR", mknode($3, NULL, NULL), mknode($6, NULL, NULL))); }
 | IDENTIFIER ASS IDENTIFIER MULTI ';' { $$ = mknode("DOUBLECONTENT", mknode($1, NULL, NULL), mknode($3, NULL, NULL)); }
-| IDENTIFIER ASS function_call ';' {$$ = mknode("function", mknode($1, NULL, NULL), $3);};
+| IDENTIFIER ASS function_call ';' {$$ = mknode("function", mknode($1, NULL, NULL), $3);};*/
 /**/
 assignment_statement: lhs ASS expr ';' {$$ = mknode("<-", $1, $3);}
 | lhs ASS STRING_LTL ';' {$$ = mknode("<-", $1, $3);};
@@ -401,10 +401,9 @@ strcmp(tree->token, ",") == 0 )
 		printf("\n)");
 }
 
-int yyerror(char *e) {
+void yyerror(char *e) {
     fflush(stdout);
     fprintf(stderr, "Error %s at line %d\n", e, yylineno);
     fprintf(stderr, "does not accept '%s'\n", yytext);
-    return 0;
+    
 }
-
