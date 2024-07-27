@@ -59,15 +59,14 @@ program: multi_function main {$$=mknode("CODE",$1,$2);};
 main: PUBLIC type MAIN '(' ')' ':' STATIC '{' function_body '}' {$$=mknode("public", mknode("Main",mknode("\n",$7,NULL),NULL), mknode("body",NULL,$9));}	
 | {$$=NULL;};
 
-function: function_access_level type IDENTIFIER '(' parameter_list ')' static_function '{' function_body '}'
-{$$ = mknode("func", mknode($3, $1, mknode("ARGS", $5, mknode("return", $8, NULL))), mknode("", $10, NULL));}
+function: function_access_level type IDENTIFIER '(' parameter_list ')' '{' function_body '}'
+{$$ = mknode("func", mknode($3, $1, mknode("ARGS", $5, mknode("return", $8, NULL))), mknode("", $8, NULL));}
 | function_access_level type IDENTIFIER '(' parameter_list ')' ':' static_function '{' function_body '}'
-{$$ = mknode("func", mknode($3, $1, mknode("ARGS", $5, mknode("return", $8, NULL))), mknode("body", NULL, $11));};
+{$$ = mknode("func", mknode($3, $1, mknode("ARGS", $5, mknode("return", $8, NULL))), mknode("body", NULL, $10));};
 
 function_access_level: PRIVATE { $$ = mknode("private", NULL, NULL); }
 | PUBLIC { $$ = mknode("public", NULL, NULL); };
 
-/*type for returning from a function*/
 type: BOOL {$$=mknode("boolean", NULL, NULL);}
  	| STRING {$$=mknode("string", NULL, NULL);}
 	| CHAR {$$=mknode("char", NULL, NULL);}
@@ -100,13 +99,16 @@ arguments: IDENTIFIER ',' arguments { $$ = mknode("arguments", mknode($1, NULL, 
 static_function: STATIC { $$ = mknode("Static", NULL, NULL); }
     | { $$ = mknode("Nonstatic", NULL, NULL); };
 
-function_body: cmmnt declarations multi_function statements return_value
+function_body: cmmnt declarations statement
+{ $$=mknode("(BODY\n", mknode("",$2,NULL),mknode("",$3,mknode("}",NULL,NULL)));}
+| cmmnt declarations statements return_value
 { $$=mknode("(BODY\n", mknode("",$2,NULL),mknode("",$3,mknode("",$4, mknode("}",NULL,NULL))));};
 
 cmmnt: COMMENT cmmnt {$$ = mknode("COMMENT", mknode($1, NULL, NULL), $2);}
 | { $$ = NULL; };
 
-declarations: declarations declare  {$$=mknode("",$1,$2);} | {$$=NULL;}  ;
+declarations: declarations declare {$$=mknode("",$1,$2);} 
+| {$$=NULL;};
 
 //declaration of varibals/ 
 declare: VARIABLE type ':' var_id ';' {$$ = mknode("var", $2, mknode("",$4, NULL));}
@@ -131,24 +133,29 @@ string_exp: IDENTIFIER '[' expr ']' ASS expr ',' { $$ = mknode($1, mknode($2, $3
 multi_function: function multi_function {$$=mknode("",$1,$2);}
 | {$$=NULL;};
 
-statements: statements statement {$$=mknode("",$1,$2);} | {$$=NULL;};
+statements: statements statement {$$=mknode("",$1,$2);} 
+| {$$=NULL;};
+
+statement_block: statement_block statement {$$=$2;}
+| statement {$$=$1;}
+| RETURN expr ';' {$$=mknode("return",$2,NULL);};
 
 statement: '(' function_body ')' { $$ = mknode("", $2, NULL); }
-| IF '(' expr ')' '{' function_body '}' { $$ = mknode("IF", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $6, NULL)); }
+| IF '(' expr ')' '{' statement_block '}' { $$ = mknode("IF", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $6, NULL)); }
 | IF '(' expr ')' statement_block ';' ELSE statement_block ';' { $$ = mknode("IF-ELSE", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $5, $8)); }
-| IF '(' expr ')' statement_block ';' ELSE '{' function_body '}' { $$ = mknode("IF-ELSE", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $5, mknode("BLOCK", $9, NULL))); }
-| IF '(' expr ')' '{' function_body '}' ELSE '{' function_body '}' { $$ = mknode("IF-ELSE", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $6, mknode("BLOCK", $10, NULL))); }
+| IF '(' expr ')' statement_block ';' ELSE '{' statement_block '}' { $$ = mknode("IF-ELSE", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $5, mknode("BLOCK", $9, NULL))); }
+| IF '(' expr ')' '{' statement_block '}' ELSE '{' statement_block '}' { $$ = mknode("IF-ELSE", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $6, mknode("BLOCK", $10, NULL))); }
 | IF '(' expr ')' statement_block { $$=mknode("IF", mknode("(", $3, mknode(")",NULL,NULL)),$5);}
-| IF '(' expr ')' '{' function_body '}' ELSE statement_block ';' { $$=mknode("IF_ELSE", mknode("(", $3, mknode(")",NULL,NULL)), mknode("",$5, mknode("", $7,NULL)));}
+| IF '(' expr ')' '{' statement_block '}' ELSE statement_block ';' { $$=mknode("IF_ELSE", mknode("(", $3, mknode(")",NULL,NULL)), mknode("",$5, mknode("", $7,NULL)));}
 | WHILE cmmnt '(' expr ')' statement_block ';' { $$=mknode("WHILE", mknode("(", $4, mknode(")",NULL,NULL)),$6);}
-| WHILE '(' expr ')' '{' function_body '}' { $$ = mknode("WHILE", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $6, NULL)); }
-| DO '{' function_body '}' WHILE '(' expr ')' ';' { $$ = mknode("DO", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $5, NULL)); }
+| WHILE '(' expr ')' '{' statement_block '}' { $$ = mknode("WHILE", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $6, NULL)); }
+| DO '{' statement_block '}' WHILE '(' expr ')' ';' { $$ = mknode("DO", mknode("(", $3, mknode(")", NULL, NULL)), mknode("BLOCK", $5, NULL)); }
 | FOR cmmnt '(' assignment_statement ';' expr ';' assignment_statement ')' statement_block { $$= mknode("for", mknode("(", mknode("",$4,$6), mknode("",$8, mknode(")",NULL,NULL))),$10);}
 | FOR cmmnt '(' assignment_statement ';' expr ';' assignment_statement ')' '{' function_body '}' { $$= mknode("for", mknode("(", mknode("",$4,$6), mknode("",$8, mknode(")",NULL,NULL))),$11);}
 | expr ';' cmmnt {$$=$1;}
 | code_block {$$=$1;}
 | assignment_statement {$$ = mknode("ASSIGN", $1, NULL);}
-| assignment_statement ';' cmmnt {$$=mknode("",$1,NULL);};
+| statements {$$=$1;};
 
 /*assignment_statement2: IDENTIFIER ASS expr ';' {$$ = mknode($1, $3, NULL);}
 | IDENTIFIER ASSINGMENT expr ';' {$$ = mknode($1, $3, NULL);}
@@ -167,8 +174,7 @@ assignment_statement: lhs ASS expr ';' {$$ = mknode("<-", $1, $3);}
 code_block: '{' cmmnt declarations statements return_value '}' cmmnt {$$=mknode("{",$3,mknode("", $4, mknode("",$5,mknode("}",NULL,NULL))));}
 | { $$ = NULL; };
 
-return_value: RETURN expr ';' cmmnt {$$=mknode("return",$2,NULL);}
-| {$$=NULL;};
+return_value: RETURN expr ';' cmmnt {$$=mknode("return",$2,NULL);};
 
 lhs: IDENTIFIER '[' expr ']' { $$=mknode($1, mknode("[",$3,mknode("]",NULL,NULL)), NULL);} 
 | IDENTIFIER {$$=mknode($1,NULL,NULL);}
@@ -186,9 +192,6 @@ paren_expression:'(' expression_list ')' {$$=$2;};
 expression_list: expr ',' expression_list {$$=mknode("",$1,mknode(",",$3,NULL));} 
 | expr {$$=mknode("",$1,NULL);}
 | {$$=NULL;};
-
-statement_block: statement {$$=$1;}
-| RETURN expr ';' {$$=mknode("return",$2,NULL);};
 
 expr:  '(' expr ')' {$$=mknode("(",$2,mknode(")",NULL,NULL));}
 	| expr EQL expr {$$=mknode("==",$1,$3);}
