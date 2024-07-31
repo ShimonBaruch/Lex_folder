@@ -71,46 +71,45 @@ extern int yydebug;
     FLOAT = 272,                   /* FLOAT  */
     DOUBPTR = 273,                 /* DOUBPTR  */
     INTPTR = 274,                  /* INTPTR  */
-    PROCEDUR = 275,                /* PROCEDUR  */
-    AND = 276,                     /* AND  */
-    ADDRESS = 277,                 /* ADDRESS  */
-    EQL = 278,                     /* EQL  */
-    ASSINGMENT = 279,              /* ASSINGMENT  */
-    ASS = 280,                     /* ASS  */
-    OR = 281,                      /* OR  */
-    LENGTH = 282,                  /* LENGTH  */
-    GREATEREQL = 283,              /* GREATEREQL  */
-    GREATER = 284,                 /* GREATER  */
-    LESSEQL = 285,                 /* LESSEQL  */
-    LESS = 286,                    /* LESS  */
-    NOTEQL = 287,                  /* NOTEQL  */
-    NOT = 288,                     /* NOT  */
-    DIVISION = 289,                /* DIVISION  */
-    PLUS = 290,                    /* PLUS  */
-    MINUS = 291,                   /* MINUS  */
-    MULTI = 292,                   /* MULTI  */
-    VARIABLE = 293,                /* VARIABLE  */
-    STRING_LTL = 294,              /* STRING_LTL  */
-    REAL_LTL = 295,                /* REAL_LTL  */
-    CHAR_LTL = 296,                /* CHAR_LTL  */
-    NULLL = 297,                   /* NULLL  */
-    MAIN = 298,                    /* MAIN  */
-    IDENTIFIER = 299,              /* IDENTIFIER  */
-    VOID = 300,                    /* VOID  */
-    PUBLIC = 301,                  /* PUBLIC  */
-    PRIVATE = 302,                 /* PRIVATE  */
-    STATIC = 303,                  /* STATIC  */
-    INT_LTL = 304,                 /* INT_LTL  */
-    DECIMAL_LTL = 305,             /* DECIMAL_LTL  */
-    HEX_LTL = 306,                 /* HEX_LTL  */
-    FLOAT_LTL = 307,               /* FLOAT_LTL  */
-    BOOLTRUE = 308,                /* BOOLTRUE  */
-    BOOLFALSE = 309,               /* BOOLFALSE  */
-    REAL = 310,                    /* REAL  */
-    FLOATPTR = 311,                /* FLOATPTR  */
-    FUNCTION = 312,                /* FUNCTION  */
-    COLON = 313,                   /* COLON  */
-    DEREFRENCE = 314               /* DEREFRENCE  */
+    AND = 275,                     /* AND  */
+    ADDRESS = 276,                 /* ADDRESS  */
+    EQL = 277,                     /* EQL  */
+    ASSINGMENT = 278,              /* ASSINGMENT  */
+    ASS = 279,                     /* ASS  */
+    OR = 280,                      /* OR  */
+    LENGTH = 281,                  /* LENGTH  */
+    GREATEREQL = 282,              /* GREATEREQL  */
+    GREATER = 283,                 /* GREATER  */
+    LESSEQL = 284,                 /* LESSEQL  */
+    LESS = 285,                    /* LESS  */
+    NOTEQL = 286,                  /* NOTEQL  */
+    NOT = 287,                     /* NOT  */
+    DIVISION = 288,                /* DIVISION  */
+    PLUS = 289,                    /* PLUS  */
+    MINUS = 290,                   /* MINUS  */
+    MULTI = 291,                   /* MULTI  */
+    VARIABLE = 292,                /* VARIABLE  */
+    STRING_LTL = 293,              /* STRING_LTL  */
+    REAL_LTL = 294,                /* REAL_LTL  */
+    CHAR_LTL = 295,                /* CHAR_LTL  */
+    NULLL = 296,                   /* NULLL  */
+    MAIN = 297,                    /* MAIN  */
+    IDENTIFIER = 298,              /* IDENTIFIER  */
+    VOID = 299,                    /* VOID  */
+    PUBLIC = 300,                  /* PUBLIC  */
+    PRIVATE = 301,                 /* PRIVATE  */
+    STATIC = 302,                  /* STATIC  */
+    INT_LTL = 303,                 /* INT_LTL  */
+    DECIMAL_LTL = 304,             /* DECIMAL_LTL  */
+    HEX_LTL = 305,                 /* HEX_LTL  */
+    FLOAT_LTL = 306,               /* FLOAT_LTL  */
+    BOOLTRUE = 307,                /* BOOLTRUE  */
+    BOOLFALSE = 308,               /* BOOLFALSE  */
+    REAL = 309,                    /* REAL  */
+    FLOATPTR = 310,                /* FLOATPTR  */
+    FUNCTION = 311,                /* FUNCTION  */
+    COLON = 312,                   /* COLON  */
+    DEREFRENCE = 313               /* DEREFRENCE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -136,46 +135,45 @@ extern int yydebug;
 #define FLOAT 272
 #define DOUBPTR 273
 #define INTPTR 274
-#define PROCEDUR 275
-#define AND 276
-#define ADDRESS 277
-#define EQL 278
-#define ASSINGMENT 279
-#define ASS 280
-#define OR 281
-#define LENGTH 282
-#define GREATEREQL 283
-#define GREATER 284
-#define LESSEQL 285
-#define LESS 286
-#define NOTEQL 287
-#define NOT 288
-#define DIVISION 289
-#define PLUS 290
-#define MINUS 291
-#define MULTI 292
-#define VARIABLE 293
-#define STRING_LTL 294
-#define REAL_LTL 295
-#define CHAR_LTL 296
-#define NULLL 297
-#define MAIN 298
-#define IDENTIFIER 299
-#define VOID 300
-#define PUBLIC 301
-#define PRIVATE 302
-#define STATIC 303
-#define INT_LTL 304
-#define DECIMAL_LTL 305
-#define HEX_LTL 306
-#define FLOAT_LTL 307
-#define BOOLTRUE 308
-#define BOOLFALSE 309
-#define REAL 310
-#define FLOATPTR 311
-#define FUNCTION 312
-#define COLON 313
-#define DEREFRENCE 314
+#define AND 275
+#define ADDRESS 276
+#define EQL 277
+#define ASSINGMENT 278
+#define ASS 279
+#define OR 280
+#define LENGTH 281
+#define GREATEREQL 282
+#define GREATER 283
+#define LESSEQL 284
+#define LESS 285
+#define NOTEQL 286
+#define NOT 287
+#define DIVISION 288
+#define PLUS 289
+#define MINUS 290
+#define MULTI 291
+#define VARIABLE 292
+#define STRING_LTL 293
+#define REAL_LTL 294
+#define CHAR_LTL 295
+#define NULLL 296
+#define MAIN 297
+#define IDENTIFIER 298
+#define VOID 299
+#define PUBLIC 300
+#define PRIVATE 301
+#define STATIC 302
+#define INT_LTL 303
+#define DECIMAL_LTL 304
+#define HEX_LTL 305
+#define FLOAT_LTL 306
+#define BOOLTRUE 307
+#define BOOLFALSE 308
+#define REAL 309
+#define FLOATPTR 310
+#define FUNCTION 311
+#define COLON 312
+#define DEREFRENCE 313
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -186,7 +184,7 @@ union YYSTYPE
     struct node *node;
     char *string;
 
-#line 190 "y.tab.h"
+#line 188 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

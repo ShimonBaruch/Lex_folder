@@ -26,7 +26,7 @@ int printlevel=0;
 
 %token <string> COMMENT WHILE DO IF ELSE FOR 
 %token <string> RETURN ARGS
-%token <string> BOOL STRING CHARPTR CHAR INT DOUBLE FLOAT DOUBPTR INTPTR PROCEDUR
+%token <string> BOOL STRING CHARPTR CHAR INT DOUBLE FLOAT DOUBPTR INTPTR 
 %token <string> AND ADDRESS EQL ASSINGMENT ASS OR LENGTH GREATEREQL GREATER LESSEQL LESS NOTEQL NOT
 %token <string> DIVISION PLUS MINUS MULTI VARIABLE
 %token <string> STRING_LTL REAL_LTL CHAR_LTL NULLL
@@ -60,12 +60,15 @@ main: PUBLIC type MAIN '(' ')' ':' STATIC '{' function_body '}' {$$=mknode("publ
 | {$$=NULL;};
 
 function: function_access_level type IDENTIFIER '(' parameter_list ')' '{' function_body '}'
-{$$ = mknode("func", mknode($3, $1, mknode("ARGS", $5, mknode("return", $8, NULL))), mknode("", $8, NULL));}
+{$$ = mknode("func", mknode($3, $1, mknode("", $5, mknode("return", $2, NULL))), mknode("", $8, NULL));}
 | function_access_level type IDENTIFIER '(' parameter_list ')' ':' static_function '{' function_body '}'
-{$$ = mknode("func", mknode($3, $1, mknode("ARGS", $5, mknode("return", $8, NULL))), mknode("body", NULL, $10));};
+{$$ = mknode("func", mknode($3, $1, mknode("", $5, mknode("", $8, NULL))), mknode("body", NULL, $10));};
 
 function_access_level: PRIVATE { $$ = mknode("private", NULL, NULL); }
 | PUBLIC { $$ = mknode("public", NULL, NULL); };
+
+static_function: STATIC { $$ = mknode("Static", NULL, NULL); }
+    | { $$ = mknode("Non-static", NULL, NULL); };
 
 type: BOOL {$$=mknode("boolean", NULL, NULL);}
  	| STRING {$$=mknode("string", NULL, NULL);}
@@ -77,27 +80,24 @@ type: BOOL {$$=mknode("boolean", NULL, NULL);}
 	| CHARPTR {$$=mknode("char*", NULL, NULL);}
 	| FLOATPTR {$$=mknode("float*", NULL, NULL);};
 	| DOUBPTR { $$ = mknode("double*", NULL, NULL); }
-	| VOID { $$ = mknode("void*", NULL, NULL); };
+	| VOID { $$ = mknode("void", NULL, NULL); };
 
 parameter_list: ARGS parameter_type  { $$ = mknode("ARGS", $2, NULL); }
 | { $$ = NULL; };
 
 //list of parameter for function or not
-parameter_type: type ':' arguments params_list  {$$ = mknode("params", $1, $4); }
+parameter_type: type ':' arguments params_list  {$$ = mknode("params", $1, $3); }
 | {$$=NULL;};
 
 //list of parameter
-params_list: params_list type ':' arguments { $$ = mknode("params", $1, $4); }
+params_list: params_list type ':' arguments { $$ = mknode("", $1, $4); }
 | { $$ = NULL; }
 | IDENTIFIER { $$ = NULL; };
 
-arguments: IDENTIFIER ',' arguments { $$ = mknode("arguments", mknode($1, NULL, NULL), $3); }
-| IDENTIFIER ';' { $$ = mknode("arguments", mknode($1, NULL, NULL), NULL); }
+arguments: IDENTIFIER ',' arguments { $$ = mknode("", mknode($1, NULL, NULL), $3); }
+| IDENTIFIER ';' { $$ = mknode("", mknode($1, NULL, NULL), NULL); }
 | { $$ = NULL; }
 | IDENTIFIER { $$ = NULL; };
-
-static_function: STATIC { $$ = mknode("Static", NULL, NULL); }
-    | { $$ = mknode("Nonstatic", NULL, NULL); };
 
 function_body: cmmnt declarations statement
 { $$=mknode("(BODY\n", mknode("",$2,NULL),mknode("",$3,mknode("}",NULL,NULL)));}
@@ -157,17 +157,6 @@ statement: '(' function_body ')' { $$ = mknode("", $2, NULL); }
 | assignment_statement {$$ = mknode("ASSIGN", $1, NULL);}
 | statements {$$=$1;};
 
-/*assignment_statement2: IDENTIFIER ASS expr ';' {$$ = mknode($1, $3, NULL);}
-| IDENTIFIER ASSINGMENT expr ';' {$$ = mknode($1, $3, NULL);}
-| IDENTIFIER ASS ADDRESS IDENTIFIER ';' {$$ = mknode("ADDRESSTO", mknode($3, NULL, NULL), mknode($4, NULL, NULL));}
-| ADDRESS IDENTIFIER ASS IDENTIFIER ';' {$$ = mknode("ADDRESSFROM", mknode($2, NULL, NULL), mknode($4, NULL, NULL));}
-| IDENTIFIER ASS IDENTIFIER MULTI ';'  {$$ = mknode("CONTENT", mknode($1, NULL, NULL), mknode($3, NULL, NULL));}
-| MULTI IDENTIFIER ASS IDENTIFIER ';' {$$ = mknode("ADDCONTENTVAR", mknode($2, NULL, NULL), mknode($4, NULL, NULL));}
-| MULTI IDENTIFIER ASS INT_LTL ';' { $$ = mknode("ADDCONTENTNUM", mknode($2, NULL, NULL), mknode($4, NULL, NULL)); }
-| IDENTIFIER '(' INT_LTL ')' ASS CHAR_LTL ';' { $$ = mknode("ARRCHAR", mknode($1, NULL, NULL), mknode("INDEX-CHAR", mknode($3, NULL, NULL), mknode($6, NULL, NULL))); }
-| IDENTIFIER ASS IDENTIFIER MULTI ';' { $$ = mknode("DOUBLECONTENT", mknode($1, NULL, NULL), mknode($3, NULL, NULL)); }
-| IDENTIFIER ASS function_call ';' {$$ = mknode("function", mknode($1, NULL, NULL), $3);};*/
-/**/
 assignment_statement: lhs ASS expr ';' {$$ = mknode("<-", $1, $3);}
 | lhs ASS STRING_LTL ';' {$$ = mknode("<-", $1, $3);};
 
@@ -241,6 +230,8 @@ int main()
 node* mknode (char *token, node *left, node *right)
 {
 	node *newnode = (node*)malloc(sizeof(node));
+	/*char *newstr = (char*)malloc(sizeof(token)+1);
+	strcpy(newstr,token);*/
 	newnode->left=left;
 	newnode->right=right;
 	newnode->token=token;
@@ -255,42 +246,33 @@ void printTabs(int n)
 }
 void Printtree(node* tree)
 {
+
 	int flag = 4;
 	printTabs(printlevel); 
 	if(strcmp(tree->token, "var") == 0)
 	{
-		
 		printf("(DECLARE ");
 		flag=2;
-		
-		
 	}
 	else if(strcmp(tree->token, "if") == 0)
 	{
 		printf("(IF\n");
-		flag = 1;
-		
-		
+		flag = 1;	
 	}
 		else if(strcmp(tree->token, "while") == 0)
 	{
 		printf("(WHILE\n");
-		flag = 1;
-		
-		
+		flag = 1;	
 	}
 			else if(strcmp(tree->token, "for") == 0)
 	{
 		printf("(FOR\n");
-		flag = 1;
-		
-		
+		flag = 1;	
 	}
-		else if(strcmp(tree->token, "func") == 0 ||strcmp(tree->token, "proc") == 0 ||strcmp(tree->token, "CODE") == 0||strcmp(tree->token, "Call func") == 0)
+		else if(strcmp(tree->token, "function") == 0 ||strcmp(tree->token, "CODE") == 0||strcmp(tree->token, "function call") == 0)
 	{
 		printf("(%s \n",tree->token);
 		flag= 2;
-		
 	}
 		else if(strcmp(tree->token, "ARGS") == 0)
 	{
@@ -304,26 +286,21 @@ void Printtree(node* tree)
 		else{
 			printf(" NONE)\n"); 
 		}
-	
-
 	}
 		else if(strcmp(tree->token, "if-else") == 0)
 	{
 		printf("(IF-ELSE\n");
 		printlevel--;
-		
 		flag = 1;
 	}
 			else if(strcmp(tree->token, "return") == 0)
 	{
-		printf("(return_value ");
+		printf("(RETURN ");
 		flag = 2;
 	}
 	else if(strcmp(tree->token, "{") == 0)
 	{
-                printf("(BLOCK\n");
-				
-				
+                printf("(BLOCK\n");		
 	}
 	else if(strcmp(tree->token, "}") == 0)
 	{
@@ -341,29 +318,28 @@ void Printtree(node* tree)
 	else if(strcmp(tree->token, ";") == 0)
 			printf("\n");
 	else if(strcmp(tree->token, "&&") == 0 ||
-strcmp(tree->token, "/") == 0 || 
-strcmp(tree->token, "=") == 0 || 
-strcmp(tree->token, "==") == 0 || 
-strcmp(tree->token, ">") == 0 || 
-strcmp(tree->token, ">=") == 0 || 
-strcmp(tree->token, "<") == 0 || 
-strcmp(tree->token, "<=") == 0 || 
-strcmp(tree->token, "-") == 0 || 
-strcmp(tree->token, "!") == 0 || 
-strcmp(tree->token, "!=") == 0 || 
-strcmp(tree->token, "||") == 0 || 
-strcmp(tree->token, "+") == 0 || 
-strcmp(tree->token, "*") == 0 || 
-strcmp(tree->token, "&") == 0 || 
-strcmp(tree->token, "^") == 0 || 
-strcmp(tree->token, "|") == 0 || 
-strcmp(tree->token, ",") == 0 )
+		strcmp(tree->token, "/") == 0 || 
+		strcmp(tree->token, "=") == 0 || 
+		strcmp(tree->token, "==") == 0 || 
+		strcmp(tree->token, ">") == 0 || 
+		strcmp(tree->token, ">=") == 0 || 
+		strcmp(tree->token, "<") == 0 || 
+		strcmp(tree->token, "<=") == 0 || 
+		strcmp(tree->token, "-") == 0 || 
+		strcmp(tree->token, "!") == 0 || 
+		strcmp(tree->token, "!=") == 0 || 
+		strcmp(tree->token, "||") == 0 || 
+		strcmp(tree->token, "+") == 0 || 
+		strcmp(tree->token, "*") == 0 || 
+		strcmp(tree->token, "&") == 0 || 
+		strcmp(tree->token, "^") == 0 || 
+		strcmp(tree->token, "|") == 0 || 
+		strcmp(tree->token, ",") == 0 )
 	{
 			printf("(%s",tree->token);
 			flag=1;
 			if(strcmp(tree->token, "=") == 0)
-				flag=2;
-				
+				flag=2;		
 	}
 	else
 	{
@@ -371,14 +347,12 @@ strcmp(tree->token, ",") == 0 )
 		||strcmp(tree->token, "Main") == 0)
 		{
 			printf("%s ", tree->token);
-			
 		}
 		else
 		{
 			printlevel++;
 			printf("%s", tree->token);
 			printlevel--;
-		
 		}
 	}
 	if (tree->left) 
@@ -393,11 +367,9 @@ strcmp(tree->token, ",") == 0 )
 		printlevel++;
 		Printtree(tree->right);
 		printlevel--;
-		
 	}
 	if(flag == 2)
 		printf(")\n");
-	
 	if(flag == 1)
 		printf(")");
 	if(flag == 0)

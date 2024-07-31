@@ -34,7 +34,6 @@ null {return NULLL;}
 void {return VOID;}
 
 func {return FUNCTION;}
-proc {return PROCEDUR;}
 main {return MAIN;}
  /*operator lexamas*/ 
 "&&" {return AND;}
