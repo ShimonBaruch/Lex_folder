@@ -1,0 +1,275 @@
+VirtualBox:~/Desktop/compilation course/project - compiler$ make run
+./compiler < input.txt
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+(CODE
+)
+syntax valid
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+Error syntax error at line 12
+does not accept ''
+make: *** [Makefile:26: run] Error 1
+gil@gil-VirtualBox:~/Desktop/compilation course/project - compiler$ 
+

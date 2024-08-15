@@ -1,0 +1,14 @@
+public void foo(args>> int: x, y, z; float: f) {
+    if (x > y) {
+        x <- x + y;
+    }
+}
+
+public void goo(args>> int: y){
+
+}
+
+public int too(args>> double: y){
+
+}
+
