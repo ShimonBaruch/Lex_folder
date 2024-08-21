@@ -27,6 +27,7 @@ void yyerror(char *e);
 int printlevel = 0;
 extern int yydebug;
 
+
 void debug_print(const char* msg) {
     printf("Debug (line %d): %s\n", yylineno, msg);
 }
@@ -66,10 +67,13 @@ void debug_print(const char* msg) {
 %type <node> function_body parameter_list parameter_type function multi_function
 %type <node> main program project declarations return_value
 %type <node> cmmnt function_access_level params_list arguments array_var string_exp multi_string_exp static_function
+
 %%
+
 project: cmmnt program { Printtree($2); 
 	debug_print("Completed project parsing");
-	printf("syntax valid\n"); };
+	printf("syntax valid\n"); 
+};
 
 
 program: multi_function main { $$=mknode("CODE",$1,$2); };
@@ -77,12 +81,13 @@ program: multi_function main { $$=mknode("CODE",$1,$2); };
 main: PUBLIC type_function MAIN '(' ')' ':' STATIC '{' function_body '}' 
 { 
     debug_print("Entered main function");
-    Symbol *current_symbol = table->currentScope->symbols;  // קבלת המשתנים מהסקופ הנוכחי
+    enter_scope(table);
+    Symbol *current_symbol = table->currentScope->symbols; // shows all table.
     while (current_symbol != NULL) {
     	printf("Variable: %s, Type: %s\n", current_symbol->name, current_symbol->type);
     	current_symbol = current_symbol->next;  // מעבר למשתנה הבא
     }
-    enter_scope(table);  // יצירת סקופ חדש
+  
     $$ = mknode("public", mknode("Main", $7, NULL), mknode("BODY", NULL, $9));
 
     exit_scope(table);  // יציאה מסקופ
@@ -99,31 +104,21 @@ function: function_access_level type_function IDENTIFIER '(' parameter_list ')' 
     if(find_symbol(table, $3) != NULL) {
         yyerror("Duplicate function name in the same scope");
     } else {
-        add_symbol(table, $3, $2->token); // הוספת הפונקציה עצמה לטבלת הסמלים
+        add_symbol(table, $3, $2->token); // enter IDENTIFIER and type_function.
     }
-    enter_scope(table);  // יצירת סקופ חדש
-    
-
-    // הוספת כל פרמטר מהפונקציה לטבלת הסמלים
+    enter_scope(table);  // open new scope for new function
+   
     node *params = $5;
     while (params != NULL) {
         if (params->left != NULL) {
-            //add_symbol(table, params->left->token, params->token); // הוספת הפרמטר לטבלה
+            add_symbol(table, params->left->token, params->token); 
         }
         params = params->right;
     }
 
-    // הצגת כל הפרמטרים והמשתנים בסקופ הנוכחי
-    /* Symbol *current_symbol = table->currentScope->symbols;
-     while (current_symbol != NULL) {
-        printf("Variable: %s, Type: %s\n", current_symbol->name, current_symbol->type);
-        current_symbol = current_symbol->next;
-    }
-    */
-    
     $$ = mknode("function", mknode($3, mknode("\n", $7, NULL), mknode("\n", $1, mknode("\n", $5, mknode("return", $2, NULL)))), mknode("", $9, NULL)); 
-
-    exit_scope(table); // יציאה מסקופ 
+   
+   exit_scope(table); // exit scope.
 };
 
 
@@ -169,11 +164,13 @@ parameter_list: ARGS parameter_type
 {
 	/*if (count_formal_args($2) != count_actual_args($$)) {
 		yyerror("Incorrect number of arguments!");
-	}*/
+	}
+	*/
 	$$=mknode("ARGS", $2, NULL); 
 }
 	
 | { $$=NULL; };
+
 //list of parameter for function or not
 parameter_type: type_id ':' arguments params_list 
 { $$=mknode($1->token,$1,mknode("",$3,mknode(")",NULL,$4))); }
@@ -197,7 +194,11 @@ arguments: IDENTIFIER ',' arguments
 | { $$ = NULL; };
 
 function_body: cmmnt declarations multi_function statements return_value
-{ $$ = mknode("(", mknode("BODY", $2, NULL), mknode("\n", $3, mknode("  ", $4, mknode("  ", $5, mknode(")", NULL, NULL))))); }
+{ 
+	enter_scope(table);
+	$$ = mknode("(", mknode("BODY", $2, NULL), mknode("\n", $3, mknode("  ", $4, mknode("  ", $5, mknode(")", NULL, NULL))))); 
+	exit_scope(table); 
+}
 | { $$ = NULL; };
 
 cmmnt: COMMENT cmmnt { $$ = mknode("COMMENT", mknode($1, NULL, NULL), $2); }
@@ -212,7 +213,7 @@ declare: VARIABLE type_id ':' var_id ';'
     if(find_symbol(table, $4->token) != NULL) {
         yyerror("Duplicate variable name in the same scope");
     } else {
-        /* add_symbol(table, $4->token, $2->token); */ // הוספת משתנה לטבלת הסמלים
+        //add_symbol(table, $4->token, $2->token); */ // הוספת משתנה לטבלת הסמלים
     }
     $$ = mknode("var", $2, mknode("", $4, NULL)); 
 };
@@ -246,16 +247,12 @@ statement: '(' function_body ')' { $$ = mknode("", $2, NULL); }
 {
    	enter_scope(table);  // יצירת סקופ חדש
 	$$ = mknode("DO", mknode("(", $3, NULL), mknode("BLOCK", $6, NULL));
- 
 	exit_scope(table);
-}	
-	
-| IF '(' expr ')' statement_block ELSE statement_block 
-    	{
-    	enter_scope(table);  // יצירת סקופ חדש
+}
+
+| IF '(' expr ')' statement_block ELSE statement_block
+{    	
 	$$ = mknode("IF-ELSE", mknode("(", $3, NULL), mknode("BLOCK", $5, mknode("BLOCK", $7, NULL)));
-	
-	exit_scope(table);
 	
 }
 
@@ -287,13 +284,14 @@ statement: '(' function_body ')' { $$ = mknode("", $2, NULL); }
 	$$=mknode("IF_ELSE", mknode("(", $3, mknode(")",NULL,NULL)), mknode("",$6, mknode("", $9,NULL))); 
 	exit_scope(table);
 }
-	
-| WHILE cmmnt '(' expr ')' statement_block ';' 
+
+
+| WHILE cmmnt '(' expr 	 statement_block ';' 
 {
    	enter_scope(table);  // יצירת סקופ חדש
 	$$=mknode("WHILE", mknode("(", $4, mknode(")",NULL,NULL)),$6); 
 	exit_scope(table);
-	printf("exit scope:\n");
+	
 }
 
 | WHILE '(' expr ')' '{' statement_block '}' 
@@ -307,7 +305,6 @@ statement: '(' function_body ')' { $$ = mknode("", $2, NULL); }
 { 
    	enter_scope(table);  // יצירת סקופ חדש
 	$$ = mknode(create_string_node("DO"), mknode(create_string_node("("), $3, NULL), mknode(create_string_node("BLOCK"), $6, NULL));
-
 	exit_scope(table);
 }
 	
@@ -395,6 +392,7 @@ int main()
 	table = create_symbol_table();
 	int pass = yyparse();
 	print_current_scope(table); 
+	print_all_scopes(table);
 	return pass;
 	free_symbol_table(table);
 }
@@ -561,6 +559,8 @@ void Printtree(node* tree)
 	if(flag == 0)
 		printf("\n)");
 }
+
+
 
 
 void yyerror(char *e) {
