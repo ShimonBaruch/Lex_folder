@@ -15,7 +15,8 @@ typedef struct Symbol {
 typedef struct Scope {
     struct Symbol* symbols;     // רשימת סמלים עבור scope זה
     struct Scope* parent;       // מצביע ל-scope האב
-    struct Scope* next;         // מצביע ל-scope הבא ברשימה המקושרת
+    struct Scope* next; // מצביע ל-scope הבא ברשימה המקושרת
+    int scope_id;    
 } Scope;
 
 typedef struct SymbolTable {
@@ -25,14 +26,14 @@ typedef struct SymbolTable {
 
 // ניהול סקופים וטבלת סמלים לפי מה שהגדרנו לקובץ parser.y
 SymbolTable* create_symbol_table();
-void add_symbol(SymbolTable* table, char* name, const char* type);
+void add_symbol(SymbolTable* table, char* name, char* type);
 Symbol* find_symbol(SymbolTable* table, char* name);
+void print_all_scopes(SymbolTable* table);
 void enter_scope(SymbolTable* table);
 void exit_scope(SymbolTable* table);
 void free_symbol_table(SymbolTable* table);
 void print_current_scope(SymbolTable* table);
-char *handler_symbolName(char* name);
-char *handler_symbolType(char* type);
+
 void handler(char *name, char *type);
 
 #endif // SYMBOL_TABLE_H
