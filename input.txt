@@ -5,10 +5,10 @@ public void foo(args>> int: x, y, z; float: f) {
 }
 
 public void goo(args>> int: y){
+	public int too(args>> double: y){
 
 }
 
-public int too(args>> double: y){
-
 }
+
 
